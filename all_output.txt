@@ -1,0 +1,73 @@
+The game will be developed using Python with the Pygame library for the graphical interface. The core classes and functions will be:
+
+1. `Game`: This class will handle the game logic, including the game board and the movement of the fruits.
+2. `Fruit`: This class will represent a fruit on the game board.
+3. `main()`: This function will be the entry point of the game, initializing the game and handling the game loop.
+
+Now, let's start with the entry point file, `main.py`.
+
+main.py
+```python
+import pygame
+from game import Game
+
+def main():
+    pygame.init()
+
+    game = Game()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return
+
+        game.update()
+        game.draw()
+
+        pygame.display.flip()
+
+if __name__ == "__main__":
+    main()
+```
+
+Next, we have the `game.py` file, which contains the `Game` class.
+
+game.py
+```python
+import pygame
+from fruit import Fruit
+
+class Game:
+    def __init__(self):
+        self.board = [[None for _ in range(4)] for _ in range(4)]
+        self.add_fruit()
+
+    def add_fruit(self):
+        empty_cells = [(i, j) for i in range(4) for j in range(4) if self.board[i][j] is None]
+        if empty_cells:
+            i, j = random.choice(empty_cells)
+            self.board[i][j] = Fruit()
+
+    def update(self):
+        # Handle game logic here
+
+    def draw(self):
+        # Draw game board here
+```
+
+Finally, we have the `fruit.py` file, which contains the `Fruit` class.
+
+fruit.py
+```python
+class Fruit:
+    def __init__(self):
+        self.value = 1
+
+    def upgrade(self):
+        self.value += 1
+
+    def draw(self):
+        # Draw fruit here
+```
+
+This is a basic structure for the game. The `update` and `draw` methods in the `Game` and `Fruit` classes need to be filled in with the actual game logic and drawing code. The `Fruit` class could also be expanded to include different types of fruits.
