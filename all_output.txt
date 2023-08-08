@@ -1,0 +1,100 @@
+Given the requirements, we will use HTML, CSS, and JavaScript for this task. The core files will be:
+
+1. index.html: This is the main HTML file that will contain the structure of the website.
+2. style.css: This file will contain all the CSS styles that will be applied to the HTML elements.
+3. script.js: This file will contain all the JavaScript code that will provide interactivity to the website.
+
+Let's start with the entry point file, which is index.html.
+
+index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Information</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Personal Website</h1>
+    </header>
+    <main>
+        <section id="personal-info">
+            <h2>Personal Information</h2>
+            <p id="name"></p>
+            <p id="age"></p>
+            <p id="profession"></p>
+            <p id="hobbies"></p>
+        </section>
+        <section id="contact-info">
+            <h2>Contact Information</h2>
+            <p id="email"></p>
+            <p id="phone"></p>
+        </section>
+    </main>
+    <footer>
+        <p>Thank you for visiting!</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
+```
+
+Next, we will create the CSS file to style our HTML elements.
+
+style.css
+```css
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+```
+
+Finally, we will create the JavaScript file to provide interactivity to our website.
+
+script.js
+```javascript
+window.onload = function() {
+    document.getElementById('name').innerText = 'Name: John Doe';
+    document.getElementById('age').innerText = 'Age: 30';
+    document.getElementById('profession').innerText = 'Profession: Software Developer';
+    document.getElementById('hobbies').innerText = 'Hobbies: Reading, Traveling, Coding';
+    document.getElementById('email').innerText = 'Email: johndoe@example.com';
+    document.getElementById('phone').innerText = 'Phone: 123-456-7890';
+}
+```
+
+This is a simple implementation of a personal website. The JavaScript code is used to populate the personal and contact information. The CSS file is used to style the HTML elements. The HTML file is the structure of the website.
