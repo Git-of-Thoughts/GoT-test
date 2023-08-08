@@ -1,0 +1,126 @@
+The core classes, functions, and methods necessary for this game are:
+
+1. `Snake`: This class will represent the snake in the game. It will have methods for moving the snake, growing the snake when it eats food, and checking if the snake has collided with itself.
+
+2. `Food`: This class will represent the food in the game. It will have a method for placing the food at a random location on the screen.
+
+3. `Game`: This class will represent the game itself. It will have methods for starting the game, ending the game, and handling the game logic (such as what happens when the snake eats food or collides with itself).
+
+4. `main`: This function will be the entry point for the game. It will create an instance of the `Game` class and start the game.
+
+Now, let's write the code for each of these classes and functions.
+
+snake.py
+```python
+import random
+
+class Snake:
+    def __init__(self):
+        self.length = 1
+        self.positions = [((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))]
+        self.direction = random.choice([UP, DOWN, LEFT, RIGHT])
+
+    def get_head_position(self):
+        return self.positions[0]
+
+    def turn(self, point):
+        if self.length > 1 and (point[0]*-1, point[1]*-1) == self.direction:
+            return
+        else:
+            self.direction = point
+
+    def move(self):
+        cur = self.get_head_position()
+        x, y = self.direction
+        new = (((cur[0]+(x*GRIDSIZE)) % SCREEN_WIDTH), (cur[1]+(y*GRIDSIZE)) % SCREEN_HEIGHT)
+        if len(self.positions) > 2 and new in self.positions[2:]:
+            self.reset()
+        else:
+            self.positions.insert(0, new)
+            if len(self.positions) > self.length:
+                self.positions.pop()
+
+    def reset(self):
+        self.length = 1
+        self.positions = [((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))]
+        self.direction = random.choice([UP, DOWN, LEFT, RIGHT])
+
+    def draw(self, surface):
+        for p in self.positions:
+            draw_box(surface, self.color, p)
+```
+
+food.py
+```python
+class Food:
+    def __init__(self):
+        self.position = (0,0)
+        self.color = (223, 163, 49)
+        self.randomize_position()
+
+    def randomize_position(self):
+        self.position = (random.randint(0, GRID_WIDTH-1)*GRIDSIZE, random.randint(0, GRID_HEIGHT-1)*GRIDSIZE)
+
+    def draw(self, surface):
+        draw_box(surface, self.color, self.position)
+```
+
+game.py
+```python
+class Game:
+    def __init__(self):
+        self.snake = Snake()
+        self.food = Food()
+
+    def is_collision(self):
+        if self.snake.get_head_position() == self.food.position:
+            self.snake.length += 1
+            self.food.randomize_position()
+
+    def draw(self, surface):
+        self.snake.draw(surface)
+        self.food.draw(surface)
+```
+
+main.py
+```python
+def main():
+    pygame.init()
+    clock = pygame.time.Clock()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
+
+    surface = pygame.Surface(screen.get_size())
+    surface = surface.convert()
+
+    game = Game()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == KEYDOWN:
+                if event.key == K_UP:
+                    game.snake.turn(UP)
+                elif event.key == K_DOWN:
+                    game.snake.turn(DOWN)
+                elif event.key == K_LEFT:
+                    game.snake.turn(LEFT)
+                elif event.key == K_RIGHT:
+                    game.snake.turn(RIGHT)
+
+        game.snake.move()
+        game.is_collision()
+        game.draw(surface)
+        screen.blit(surface, (0,0))
+        pygame.display.update()
+        clock.tick(8)
+
+if __name__ == "__main__":
+    main()
+```
+
+requirements.txt
+```txt
+pygame==2.0.1
+```
