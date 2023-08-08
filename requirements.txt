@@ -1,0 +1,2 @@
+# This file lists the Python packages that the project depends on.
+# Since this project does not have any dependencies, this file is empty.
