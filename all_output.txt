@@ -1,0 +1,171 @@
+The core classes, functions, and methods necessary for this game are:
+
+1. `Game` class: This class will handle the game loop, user input, and game over condition.
+2. `Snake` class: This class will handle the movement and growth of the snake.
+3. `Board` class: This class will handle the game board, including the placement of the apple and the rendering of the game state.
+4. `Point` class: This class will represent a point on the game board.
+
+Now, let's start with the entry point file, `main.py`.
+
+main.py
+```python
+from game import Game
+
+def main():
+    game = Game()
+    game.run()
+
+if __name__ == "__main__":
+    main()
+```
+
+Next, we'll define the `Game` class in `game.py`.
+
+game.py
+```python
+import curses
+from board import Board
+from snake import Snake
+
+class Game:
+    def __init__(self):
+        self.board = Board(20, 20)
+        self.snake = Snake(self.board)
+        self.score = 0
+
+    def run(self):
+        # Initialize curses
+        stdscr = curses.initscr()
+        curses.cbreak()
+        stdscr.keypad(1)
+        stdscr.timeout(100)
+
+        while True:
+            # Get user input
+            key = stdscr.getch()
+            self.snake.change_direction(key)
+
+            # Update game state
+            if self.snake.move():
+                self.score += 1
+                self.board.place_apple()
+
+            # Draw game state
+            self.board.draw(stdscr, self.snake, self.score)
+
+            # Check game over condition
+            if self.snake.check_collision():
+                break
+
+        # Clean up curses
+        stdscr.keypad(0)
+        curses.echo()
+        curses.nocbreak()
+        curses.endwin()
+```
+
+Next, we'll define the `Snake` class in `snake.py`.
+
+snake.py
+```python
+from point import Point
+
+class Snake:
+    def __init__(self, board):
+        self.board = board
+        self.direction = Point(0, 1)
+        self.body = [Point(board.height // 2, board.width // 2)]
+
+    def change_direction(self, key):
+        if key == curses.KEY_UP and self.direction.y != 1:
+            self.direction = Point(-1, 0)
+        elif key == curses.KEY_DOWN and self.direction.y != -1:
+            self.direction = Point(1, 0)
+        elif key == curses.KEY_LEFT and self.direction.x != 1:
+            self.direction = Point(0, -1)
+        elif key == curses.KEY_RIGHT and self.direction.x != -1:
+            self.direction = Point(0, 1)
+
+    def move(self):
+        head = self.body[0]
+        new_head = Point(head.y + self.direction.y, head.x + self.direction.x)
+
+        if new_head in self.body or not self.board.is_valid_point(new_head):
+            return False
+
+        self.body.insert(0, new_head)
+
+        if self.board.get_cell(new_head) != 'A':
+            self.body.pop()
+        else:
+            return True
+
+    def check_collision(self):
+        head = self.body[0]
+        return head in self.body[1:] or not self.board.is_valid_point(head)
+```
+
+Next, we'll define the `Board` class in `board.py`.
+
+board.py
+```python
+import random
+from point import Point
+
+class Board:
+    def __init__(self, height, width):
+        self.height = height
+        self.width = width
+        self.cells = [[' ' for _ in range(width)] for _ in range(height)]
+        self.place_apple()
+
+    def place_apple(self):
+        while True:
+            y = random.randint(0, self.height - 1)
+            x = random.randint(0, self.width - 1)
+            if self.cells[y][x] == ' ':
+                self.cells[y][x] = 'A'
+                break
+
+    def get_cell(self, point):
+        return self.cells[point.y][point.x]
+
+    def is_valid_point(self, point):
+        return 0 <= point.y < self.height and 0 <= point.x < self.width
+
+    def draw(self, stdscr, snake, score):
+        stdscr.clear()
+        for y in range(self.height):
+            for x in range(self.width):
+                char = self.cells[y][x]
+                if Point(y, x) in snake.body:
+                    char = 'S'
+                stdscr.addch(y, x, char)
+        stdscr.addstr(self.height, 0, f'Score: {score}')
+        stdscr.refresh()
+```
+
+Finally, we'll define the `Point` class in `point.py`.
+
+point.py
+```python
+class Point:
+    def __init__(self, y, x):
+        self.y = y
+        self.x = x
+
+    def __eq__(self, other):
+        return self.y == other.y and self.x == other.x
+
+    def __hash__(self):
+        return hash((self.y, self.x))
+```
+
+The `requirements.txt` file for this project is:
+
+requirements.txt
+```
+curses
+```
+
+This game can be run by executing the `main.py` file. The player controls the snake using the arrow keys. The game ends when the snake hits the edge of the board or itself. The player's score, which is the number of apples eaten by the snake, is displayed at the bottom of the game board.
