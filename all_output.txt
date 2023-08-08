@@ -11,3 +11,24 @@ Here are the core classes, functions, methods that will be necessary:
 Here is the content of each file:
 
 main.py
+```python
+from hello_world import print_hello_world
+
+if __name__ == "__main__":
+    print_hello_world()
+```
+
+hello_world.py
+```python
+def print_hello_world():
+    """Prints 'Hello, World!' to the console."""
+    print("Hello, World!")
+```
+
+requirements.txt
+```
+# This file lists the Python packages that the project depends on.
+# Since this project does not have any dependencies, this file is empty.
+```
+
+To run the project, navigate to the project directory in a terminal and run `python main.py`. The program should print "Hello, World!" to the console.
