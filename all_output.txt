@@ -1,0 +1,91 @@
+The core classes, functions, and methods necessary for the snake game are:
+
+1. `Game` class: This class will handle the game logic, including the game loop, user input, and game over condition.
+2. `Snake` class: This class will represent the snake. It will have methods for moving the snake, growing the snake, and checking if the snake has collided with itself.
+3. `Food` class: This class will represent the food. It will have a method for placing the food at a random location on the grid.
+4. `draw_grid` function: This function will draw the current state of the game grid in the console.
+
+Now, let's write the code for each of these components.
+
+game.py
+```python
+import random
+from snake import Snake
+from food import Food
+
+class Game:
+    def __init__(self, grid_size):
+        self.grid_size = grid_size
+        self.snake = Snake()
+        self.food = Food(self.grid_size)
+
+    def draw_grid(self):
+        for i in range(self.grid_size):
+            for j in range(self.grid_size):
+                if (i, j) in self.snake.body:
+                    print('S', end='')
+                elif (i, j) == self.food.position:
+                    print('F', end='')
+                else:
+                    print('.', end='')
+            print()
+
+    def play(self):
+        while True:
+            self.draw_grid()
+            direction = input('Enter direction (up, down, left, right): ')
+            if direction not in ['up', 'down', 'left', 'right']:
+                continue
+            if not self.snake.move(direction):
+                break
+            if self.snake.head == self.food.position:
+                self.snake.grow()
+                self.food = Food(self.grid_size)
+        print('Game over!')
+
+if __name__ == '__main__':
+    game = Game(10)
+    game.play()
+```
+
+snake.py
+```python
+class Snake:
+    def __init__(self):
+        self.body = [(0, 0)]
+        self.directions = {'up': (-1, 0), 'down': (1, 0), 'left': (0, -1), 'right': (0, 1)}
+
+    @property
+    def head(self):
+        return self.body[0]
+
+    def move(self, direction):
+        new_head = (self.head[0] + self.directions[direction][0], self.head[1] + self.directions[direction][1])
+        if new_head in self.body:
+            return False
+        self.body.insert(0, new_head)
+        self.body.pop()
+        return True
+
+    def grow(self):
+        self.body.append(self.body[-1])
+```
+
+food.py
+```python
+import random
+
+class Food:
+    def __init__(self, grid_size):
+        self.position = self.random_position(grid_size)
+
+    def random_position(self, grid_size):
+        return (random.randint(0, grid_size - 1), random.randint(0, grid_size - 1))
+```
+
+requirements.txt
+```txt
+python==3.8.5
+```
+
+This code should be fully functional. The `game.py` file is the entry point of the game. It imports the `Snake` and `Food` classes from the `snake.py` and `food.py` files, respectively. The `requirements.txt` file specifies the Python version required to run the game.
