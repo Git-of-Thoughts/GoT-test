@@ -1,0 +1,135 @@
+The core classes, functions, and methods necessary for the game are:
+
+1. `Point`: A class to represent a point in the grid. It will have two attributes, `x` and `y`, to represent the coordinates of the point.
+
+2. `Snake`: A class to represent the snake. It will have the following attributes and methods:
+   - `body`: A list of `Point` objects to represent the body of the snake.
+   - `direction`: A `Point` object to represent the direction in which the snake is moving.
+   - `get_head_position`: A method to get the position of the snake's head.
+   - `turn_left`, `turn_right`, `turn_up`, `turn_down`: Methods to change the direction of the snake.
+   - `move`: A method to move the snake in the current direction.
+   - `grow`: A method to grow the snake by adding a new segment at the end of its body.
+   - `collides_with_self`: A method to check if the snake has collided with itself.
+
+3. `Game`: A class to represent the game. It will have the following attributes and methods:
+   - `snake`: A `Snake` object to represent the snake.
+   - `apple`: A `Point` object to represent the position of the apple.
+   - `score`: An integer to represent the score.
+   - `is_over`: A boolean to represent whether the game is over.
+   - `reset`: A method to reset the game.
+   - `place_apple`: A method to place a new apple in a random position in the grid.
+   - `update`: A method to update the game state.
+   - `draw`: A method to draw the game state.
+
+4. `main`: A function to start the game. It will create a `Game` object and enter a game loop where it reads user input, updates the game state, and draws the game state.
+
+Now, let's write the code for each of these classes, functions, and methods.
+
+snake_game.py
+```python
+import random
+import curses
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+class Snake:
+    def __init__(self, body, direction):
+        self.body = body
+        self.direction = direction
+
+    def get_head_position(self):
+        return self.body[0]
+
+    def turn_left(self):
+        self.direction = Point(-1, 0)
+
+    def turn_right(self):
+        self.direction = Point(1, 0)
+
+    def turn_up(self):
+        self.direction = Point(0, -1)
+
+    def turn_down(self):
+        self.direction = Point(0, 1)
+
+    def move(self):
+        new_head = Point(self.get_head_position().x + self.direction.x, self.get_head_position().y + self.direction.y)
+        self.body.insert(0, new_head)
+        self.body.pop()
+
+    def grow(self):
+        self.body.append(self.body[-1])
+
+    def collides_with_self(self):
+        return self.get_head_position() in self.body[1:]
+
+class Game:
+    def __init__(self, screen, height, width):
+        self.screen = screen
+        self.height = height
+        self.width = width
+        self.reset()
+
+    def reset(self):
+        self.snake = Snake([Point(self.width // 2, self.height // 2)], Point(0, 0))
+        self.score = 0
+        self.is_over = False
+        self.place_apple()
+
+    def place_apple(self):
+        self.apple = Point(random.randint(0, self.width - 1), random.randint(0, self.height - 1))
+
+    def update(self):
+        if self.snake.get_head_position() == self.apple:
+            self.score += 1
+            self.snake.grow()
+            self.place_apple()
+
+        if self.snake.get_head_position().x < 0 or self.snake.get_head_position().x >= self.width or self.snake.get_head_position().y < 0 or self.snake.get_head_position().y >= self.height or self.snake.collides_with_self():
+            self.is_over = True
+
+        self.snake.move()
+
+    def draw(self):
+        self.screen.clear()
+        for point in self.snake.body:
+            self.screen.addch(point.y, point.x, '#')
+        self.screen.addch(self.apple.y, self.apple.x, '*')
+        self.screen.addstr(0, 0, 'Score: ' + str(self.score))
+
+def main():
+    curses.initscr()
+    height, width = 20, 40
+    win = curses.newwin(height, width, 0, 0)
+    win.keypad(1)
+    win.border(0)
+    win.nodelay(1)
+    game = Game(win, height, width)
+    while True:
+        event = win.getch()
+        if event == ord('q'):
+            break
+        elif event == curses.KEY_LEFT:
+            game.snake.turn_left()
+        elif event == curses.KEY_RIGHT:
+            game.snake.turn_right()
+        elif event == curses.KEY_UP:
+            game.snake.turn_up()
+        elif event == curses.KEY_DOWN:
+            game.snake.turn_down()
+        game.update()
+        if game.is_over:
+            game.reset()
+        game.draw()
+        win.refresh()
+        curses.napms(100)
+    curses.endwin()
+
+if __name__ == "__main__":
+    main()
+```
+
+This is a single-file Python script, so there's no need for a `requirements.txt` file. The script uses only the Python standard library.
