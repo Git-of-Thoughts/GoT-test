@@ -1,0 +1,82 @@
+Assumptions:
+
+1. The programming language to be used is Python.
+2. The breadth-first search algorithm will be applied to a graph.
+3. The graph is represented as an adjacency list.
+4. The graph is unweighted and undirected.
+5. The nodes of the graph are represented as integers.
+6. The input to the algorithm is a graph and a start node.
+7. The output of the algorithm is a list of nodes in the order they were visited.
+
+Core Classes, Functions, and Methods:
+
+1. `Graph`: This class represents the graph. It has methods to add nodes and edges.
+2. `add_node`: This method is used to add a node to the graph.
+3. `add_edge`: This method is used to add an edge between two nodes in the graph.
+4. `breadth_first_search`: This function implements the breadth-first search algorithm. It takes a graph and a start node as input and returns a list of nodes in the order they were visited.
+
+Now, let's write the code for each file.
+
+graph.py
+```python
+class Graph:
+    def __init__(self):
+        self.graph = {}
+
+    def add_node(self, node):
+        if node not in self.graph:
+            self.graph[node] = []
+
+    def add_edge(self, node1, node2):
+        if node1 in self.graph and node2 in self.graph:
+            self.graph[node1].append(node2)
+            self.graph[node2].append(node1)
+```
+
+breadth_first_search.py
+```python
+from collections import deque
+from graph import Graph
+
+def breadth_first_search(graph, start):
+    visited = []
+    queue = deque([start])
+
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            visited.append(node)
+            neighbours = graph.graph[node]
+            for neighbour in neighbours:
+                if neighbour not in visited:
+                    queue.append(neighbour)
+
+    return visited
+```
+
+main.py
+```python
+from graph import Graph
+from breadth_first_search import breadth_first_search
+
+def main():
+    g = Graph()
+    g.add_node(1)
+    g.add_node(2)
+    g.add_node(3)
+    g.add_node(4)
+    g.add_edge(1, 2)
+    g.add_edge(1, 3)
+    g.add_edge(2, 4)
+    print(breadth_first_search(g, 1))
+
+if __name__ == "__main__":
+    main()
+```
+
+requirements.txt
+```
+python==3.8
+```
+
+The entry point of the program is the `main.py` file. It imports the `Graph` class from `graph.py` and the `breadth_first_search` function from `breadth_first_search.py`. The `main` function creates a graph, adds nodes and edges to it, and then performs a breadth-first search starting from node 1. The result is printed to the console. The `requirements.txt` file specifies the version of Python used.
