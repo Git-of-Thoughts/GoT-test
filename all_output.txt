@@ -1,0 +1,88 @@
+Based on the requirements and assumptions, we will need the following core classes and methods:
+
+1. `RocketMQConsumer`: This is the main class that will handle the consumption of messages from RocketMQ. It will have the following methods:
+   - `consume()`: This method will consume messages from RocketMQ.
+   - `processMessage(Message message)`: This method will process the consumed message. It will check if the message has been processed before by checking its MessageId against a store of processed MessageIds. If the message has not been processed before, it will process the message and add its MessageId to the store of processed MessageIds.
+
+2. `MessageStore`: This class will handle the storage of processed MessageIds. It will have the following methods:
+   - `addMessageId(String messageId)`: This method will add a MessageId to the store.
+   - `hasMessageId(String messageId)`: This method will check if a MessageId is in the store.
+
+Now, let's implement these classes and methods in Java.
+
+rocketmqconsumer.java
+```java
+import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.common.message.MessageExt;
+
+public class RocketMQConsumer {
+    private DefaultMQPushConsumer consumer;
+    private MessageStore messageStore;
+
+    public RocketMQConsumer(String consumerGroup, String namesrvAddr, MessageStore messageStore) {
+        this.consumer = new DefaultMQPushConsumer(consumerGroup);
+        this.consumer.setNamesrvAddr(namesrvAddr);
+        this.messageStore = messageStore;
+    }
+
+    public void consume(String topic, String tags) throws Exception {
+        this.consumer.subscribe(topic, tags);
+        this.consumer.registerMessageListener((List<MessageExt> msgs, ConsumeConcurrentlyContext context) -> {
+            for (MessageExt msg : msgs) {
+                processMessage(msg);
+            }
+            return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+        });
+        this.consumer.start();
+    }
+
+    private void processMessage(MessageExt message) {
+        String messageId = message.getMsgId();
+        if (!this.messageStore.hasMessageId(messageId)) {
+            // Process the message here
+            // ...
+
+            this.messageStore.addMessageId(messageId);
+        }
+    }
+}
+```
+
+messagestore.java
+```java
+import java.util.HashSet;
+import java.util.Set;
+
+public class MessageStore {
+    private Set<String> messageIds;
+
+    public MessageStore() {
+        this.messageIds = new HashSet<>();
+    }
+
+    public void addMessageId(String messageId) {
+        this.messageIds.add(messageId);
+    }
+
+    public boolean hasMessageId(String messageId) {
+        return this.messageIds.contains(messageId);
+    }
+}
+```
+
+main.java
+```java
+public class Main {
+    public static void main(String[] args) {
+        MessageStore messageStore = new MessageStore();
+        RocketMQConsumer consumer = new RocketMQConsumer("consumerGroup1", "localhost:9876", messageStore);
+        try {
+            consumer.consume("TopicTest", "*");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+Please note that you need to replace `"consumerGroup1"`, `"localhost:9876"`, `"TopicTest"`, and `"*"` with your actual RocketMQ consumer group, nameserver address, topic, and tags. Also, the actual processing of the message is omitted in the `processMessage` method and should be implemented based on your specific requirements.
