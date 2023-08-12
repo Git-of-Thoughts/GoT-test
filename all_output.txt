@@ -1,0 +1,100 @@
+Given the assumptions, we will be creating a simple command-line based to-do list application using Python. The application will have the following functionalities:
+
+1. Add a task
+2. Mark a task as complete
+3. Delete a task
+4. Edit a task
+5. List all tasks
+
+We will be using the following core classes and methods:
+
+1. `Task`: A class to represent a task. It will have properties like `title`, `description`, `is_completed` and methods like `mark_as_complete`.
+2. `TodoList`: A class to represent the to-do list. It will have properties like `tasks` (a list of `Task` objects) and methods like `add_task`, `delete_task`, `edit_task`, `mark_task_as_complete`, and `list_tasks`.
+
+Here is the code for each file:
+
+task.py
+```python
+class Task:
+    def __init__(self, title, description):
+        self.title = title
+        self.description = description
+        self.is_completed = False
+
+    def mark_as_complete(self):
+        self.is_completed = True
+```
+
+todolist.py
+```python
+from task import Task
+
+class TodoList:
+    def __init__(self):
+        self.tasks = []
+
+    def add_task(self, title, description):
+        task = Task(title, description)
+        self.tasks.append(task)
+
+    def delete_task(self, title):
+        self.tasks = [task for task in self.tasks if task.title != title]
+
+    def edit_task(self, old_title, new_title, new_description):
+        for task in self.tasks:
+            if task.title == old_title:
+                task.title = new_title
+                task.description = new_description
+
+    def mark_task_as_complete(self, title):
+        for task in self.tasks:
+            if task.title == title:
+                task.mark_as_complete()
+
+    def list_tasks(self):
+        for task in self.tasks:
+            print(f"Title: {task.title}, Description: {task.description}, Completed: {task.is_completed}")
+```
+
+main.py
+```python
+from todolist import TodoList
+
+def main():
+    todo_list = TodoList()
+
+    while True:
+        print("1. Add task")
+        print("2. Delete task")
+        print("3. Edit task")
+        print("4. Mark task as complete")
+        print("5. List tasks")
+        print("6. Exit")
+
+        choice = int(input("Enter your choice: "))
+
+        if choice == 1:
+            title = input("Enter task title: ")
+            description = input("Enter task description: ")
+            todo_list.add_task(title, description)
+        elif choice == 2:
+            title = input("Enter task title to delete: ")
+            todo_list.delete_task(title)
+        elif choice == 3:
+            old_title = input("Enter task title to edit: ")
+            new_title = input("Enter new task title: ")
+            new_description = input("Enter new task description: ")
+            todo_list.edit_task(old_title, new_title, new_description)
+        elif choice == 4:
+            title = input("Enter task title to mark as complete: ")
+            todo_list.mark_task_as_complete(title)
+        elif choice == 5:
+            todo_list.list_tasks()
+        elif choice == 6:
+            break
+
+if __name__ == "__main__":
+    main()
+```
+
+To run the application, simply run the `main.py` file.
