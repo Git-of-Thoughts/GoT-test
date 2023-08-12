@@ -1,0 +1,87 @@
+Based on the assumptions and the requirements, we will create a simple Python application to manage a list of "todos". The application will have the ability to add a new task, list all tasks, and mark a task as completed.
+
+Here are the core classes, functions, and methods that will be necessary:
+
+1. `Todo`: A class to represent a single todo item. It will have properties like `id`, `task`, and `completed`.
+
+2. `TodoList`: A class to represent a list of todos. It will have methods like `add_todo`, `get_all_todos`, and `mark_as_completed`.
+
+3. `main.py`: The entry point of the application. It will interact with the user and use the `TodoList` class to manage the todos.
+
+Now, let's write the code for each file.
+
+`todo.py`
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Todo:
+    id: int
+    task: str
+    completed: bool = False
+```
+
+`todolist.py`
+```python
+from typing import List
+from todo import Todo
+
+class TodoList:
+    def __init__(self):
+        self.todos = []
+
+    def add_todo(self, task: str):
+        id = len(self.todos) + 1
+        todo = Todo(id, task)
+        self.todos.append(todo)
+
+    def get_all_todos(self) -> List[Todo]:
+        return self.todos
+
+    def mark_as_completed(self, id: int):
+        for todo in self.todos:
+            if todo.id == id:
+                todo.completed = True
+                break
+```
+
+`main.py`
+```python
+from todolist import TodoList
+
+def main():
+    todo_list = TodoList()
+
+    while True:
+        print("1. Add todo")
+        print("2. List todos")
+        print("3. Mark todo as completed")
+        print("4. Exit")
+        choice = int(input("Enter your choice: "))
+
+        if choice == 1:
+            task = input("Enter the task: ")
+            todo_list.add_todo(task)
+        elif choice == 2:
+            todos = todo_list.get_all_todos()
+            for todo in todos:
+                status = "Completed" if todo.completed else "Not completed"
+                print(f"{todo.id}. {todo.task} - {status}")
+        elif choice == 3:
+            id = int(input("Enter the id of the todo to mark as completed: "))
+            todo_list.mark_as_completed(id)
+        elif choice == 4:
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
+```
+
+`requirements.txt`
+```
+dataclasses
+```
+
+To run the application, you need to install the dependencies using `pip install -r requirements.txt` and then run `python main.py`.
