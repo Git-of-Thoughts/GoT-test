@@ -1,0 +1,87 @@
+Assumptions:
+- We are creating a simple To-Do list application in Python.
+- The application will allow users to add tasks, view tasks, and mark tasks as completed.
+- The tasks will be stored in memory and will not persist when the application is closed.
+- The application will be a command-line application.
+
+Core Classes, Functions, and Methods:
+1. `Task`: A class to represent a task. It will have properties for the task description and a flag to indicate if the task is completed.
+2. `ToDoList`: A class to manage the list of tasks. It will have methods to add a task, view all tasks, and mark a task as completed.
+3. `main`: The entry point function. It will handle user input and call the appropriate methods on the `ToDoList` object.
+
+Now, let's write the code for these classes and functions.
+
+`task.py`
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Task:
+    """A class to represent a task."""
+    description: str
+    is_completed: bool = False
+```
+
+`todolist.py`
+```python
+from typing import List
+from task import Task
+
+class ToDoList:
+    """A class to manage the list of tasks."""
+    def __init__(self):
+        self.tasks: List[Task] = []
+
+    def add_task(self, description: str):
+        """Add a new task to the list."""
+        self.tasks.append(Task(description))
+
+    def view_tasks(self):
+        """Print all tasks."""
+        for i, task in enumerate(self.tasks, start=1):
+            status = 'Done' if task.is_completed else 'Not Done'
+            print(f'{i}. {task.description} - {status}')
+
+    def mark_task_as_completed(self, task_number: int):
+        """Mark a task as completed."""
+        self.tasks[task_number - 1].is_completed = True
+```
+
+`main.py`
+```python
+from todolist import ToDoList
+
+def main():
+    """The entry point function."""
+    todo_list = ToDoList()
+
+    while True:
+        print('1. Add task')
+        print('2. View tasks')
+        print('3. Mark task as completed')
+        print('4. Exit')
+        choice = input('Choose an option: ')
+
+        if choice == '1':
+            description = input('Enter task description: ')
+            todo_list.add_task(description)
+        elif choice == '2':
+            todo_list.view_tasks()
+        elif choice == '3':
+            task_number = int(input('Enter task number: '))
+            todo_list.mark_task_as_completed(task_number)
+        elif choice == '4':
+            break
+        else:
+            print('Invalid choice. Please try again.')
+
+if __name__ == '__main__':
+    main()
+```
+
+`requirements.txt`
+```
+# No external dependencies
+```
+
+This completes the architecture of the To-Do list application. The `main.py` file is the entry point of the application. It imports the `ToDoList` class from the `todolist.py` file. The `ToDoList` class in turn imports the `Task` class from the `task.py` file. The application has no external dependencies, so the `requirements.txt` file is empty.
