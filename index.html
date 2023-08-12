@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+</head>
+<body>
+    <header>
+        <h1>Todo List</h1>
+    </header>
+    <main>
+        <form action="/" method="post">
+            <input type="text" name="content" id="content" required>
+            <input type="submit" value="Add Task">
+        </form>
+        {% for task in tasks %}
+            <div>
+                <span>{{ task.content }}</span>
+                <a href="/complete/{{ task.id }}">Complete</a>
+                <a href="/delete/{{ task.id }}">Delete</a>
+            </div>
+        {% endfor %}
+    </main>
+</body>
+</html>
