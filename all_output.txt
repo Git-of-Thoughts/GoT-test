@@ -1,0 +1,97 @@
+Assumptions:
+1. We will be creating a simple autoencoder for the purpose of dimensionality reduction.
+2. We will use the MNIST dataset for training and testing the autoencoder.
+3. We will use Keras, a popular deep learning library in Python, to build the autoencoder.
+4. The autoencoder will consist of an encoder and a decoder. The encoder will compress the input and the decoder will reconstruct the input from the compressed representation.
+5. The complexity of the autoencoder will be kept to a minimum for the sake of clarity and understanding.
+
+Core Classes, Functions, and Methods:
+1. Autoencoder: This is the main class that will contain the encoder and decoder.
+2. Encoder: This class will take in the input data and compress it.
+3. Decoder: This class will take the compressed data and reconstruct the original input.
+4. train: This function will train the autoencoder on the MNIST dataset.
+5. test: This function will test the autoencoder's performance on the MNIST dataset.
+
+Now, let's write the code for each of these components.
+
+autoencoder.py
+```python
+from keras.layers import Input, Dense
+from keras.models import Model
+
+class Autoencoder:
+    def __init__(self, encoding_dim):
+        self.encoding_dim = encoding_dim
+        self.autoencoder = None
+        self.encoder = None
+        self.decoder = None
+
+    def build(self, input_shape):
+        input_img = Input(shape=(input_shape,))
+        encoded = Dense(self.encoding_dim, activation='relu')(input_img)
+        decoded = Dense(input_shape, activation='sigmoid')(encoded)
+        self.autoencoder = Model(input_img, decoded)
+        self.encoder = Model(input_img, encoded)
+        encoded_input = Input(shape=(self.encoding_dim,))
+        decoder_layer = self.autoencoder.layers[-1]
+        self.decoder = Model(encoded_input, decoder_layer(encoded_input))
+        self.autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+```
+
+train.py
+```python
+from keras.datasets import mnist
+import numpy as np
+from autoencoder import Autoencoder
+
+def train(autoencoder, epochs, batch_size):
+    (x_train, _), (x_test, _) = mnist.load_data()
+    x_train = x_train.astype('float32') / 255.
+    x_test = x_test.astype('float32') / 255.
+    x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:])))
+    x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
+    autoencoder.autoencoder.fit(x_train, x_train,
+                                epochs=epochs,
+                                batch_size=batch_size,
+                                shuffle=True,
+                                validation_data=(x_test, x_test))
+```
+
+test.py
+```python
+from keras.datasets import mnist
+import numpy as np
+from autoencoder import Autoencoder
+
+def test(autoencoder):
+    (x_train, _), (x_test, _) = mnist.load_data()
+    x_test = x_test.astype('float32') / 255.
+    x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
+    encoded_imgs = autoencoder.encoder.predict(x_test)
+    decoded_imgs = autoencoder.decoder.predict(encoded_imgs)
+    return encoded_imgs, decoded_imgs
+```
+
+requirements.txt
+```txt
+keras==2.4.3
+numpy==1.19.5
+```
+
+main.py
+```python
+from autoencoder import Autoencoder
+from train import train
+from test import test
+
+def main():
+    autoencoder = Autoencoder(32)
+    autoencoder.build(784)
+    train(autoencoder, 50, 256)
+    encoded_imgs, decoded_imgs = test(autoencoder)
+    print("Encoded Images: ", encoded_imgs)
+    print("Decoded Images: ", decoded_imgs)
+
+if __name__ == "__main__":
+    main()
+```
