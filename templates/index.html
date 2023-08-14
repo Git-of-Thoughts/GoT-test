@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jurassic Park Dinosaurs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Jurassic Park Dinosaurs</h1>
+    <ul>
+        {% for dinosaur in dinosaurs %}
+        <li>
+            <h2>{{ dinosaur.name }}</h2>
+            <p>{{ dinosaur.description }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,108 @@
+Given the requirements, we will be using Python with Flask for the backend and HTML/CSS for the frontend. We will also use a simple JSON file to store the data about the dinosaurs.
+
+Here are the core classes, functions, and methods that will be necessary:
+
+1. `app.py`: This is the entry point of our application. It will contain the Flask application and the routes for our website.
+
+2. `dinosaurs.json`: This file will store the data about the dinosaurs. Each dinosaur will have a name and a description.
+
+3. `templates/index.html`: This is the main page of our website. It will display the list of dinosaurs.
+
+4. `static/styles.css`: This file will contain the CSS styles for our website.
+
+Now, let's write the code for each file.
+
+app.py
+```python
+from flask import Flask, render_template
+import json
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    with open('dinosaurs.json') as f:
+        dinosaurs = json.load(f)
+    return render_template('index.html', dinosaurs=dinosaurs)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+dinosaurs.json
+```json
+[
+    {"name": "Tyrannosaurus", "description": "A large carnivorous dinosaur."},
+    {"name": "Velociraptor", "description": "A small, agile carnivorous dinosaur."},
+    {"name": "Triceratops", "description": "A large herbivorous dinosaur with three horns."},
+    {"name": "Brachiosaurus", "description": "A gigantic herbivorous dinosaur with a long neck."},
+    {"name": "Stegosaurus", "description": "A large herbivorous dinosaur with plates along its back."},
+    {"name": "Pteranodon", "description": "A large flying reptile."},
+    {"name": "Spinosaurus", "description": "A large carnivorous dinosaur with a sail on its back."},
+    {"name": "Ankylosaurus", "description": "A large herbivorous dinosaur with a club tail."},
+    {"name": "Gallimimus", "description": "A small, fast herbivorous dinosaur."},
+    {"name": "Dilophosaurus", "description": "A medium-sized carnivorous dinosaur with a crest on its head."}
+]
+```
+
+templates/index.html
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jurassic Park Dinosaurs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Jurassic Park Dinosaurs</h1>
+    <ul>
+        {% for dinosaur in dinosaurs %}
+        <li>
+            <h2>{{ dinosaur.name }}</h2>
+            <p>{{ dinosaur.description }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+```
+
+static/styles.css
+```css
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+h2 {
+    margin: 0 0 10px;
+}
+
+p {
+    margin: 0;
+}
+```
+
+Finally, we need to create a `requirements.txt` file to list the Python packages that our application depends on.
+
+requirements.txt
+```txt
+Flask==1.1.2
+```
+
+To run the application, you need to install the dependencies with `pip install -r requirements.txt` and then run `python app.py`. The website will be available at `http://localhost:5000`.

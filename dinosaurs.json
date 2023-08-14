@@ -1,0 +1,12 @@
+[
+    {"name": "Tyrannosaurus", "description": "A large carnivorous dinosaur."},
+    {"name": "Velociraptor", "description": "A small, agile carnivorous dinosaur."},
+    {"name": "Triceratops", "description": "A large herbivorous dinosaur with three horns."},
+    {"name": "Brachiosaurus", "description": "A gigantic herbivorous dinosaur with a long neck."},
+    {"name": "Stegosaurus", "description": "A large herbivorous dinosaur with plates along its back."},
+    {"name": "Pteranodon", "description": "A large flying reptile."},
+    {"name": "Spinosaurus", "description": "A large carnivorous dinosaur with a sail on its back."},
+    {"name": "Ankylosaurus", "description": "A large herbivorous dinosaur with a club tail."},
+    {"name": "Gallimimus", "description": "A small, fast herbivorous dinosaur."},
+    {"name": "Dilophosaurus", "description": "A medium-sized carnivorous dinosaur with a crest on its head."}
+]
