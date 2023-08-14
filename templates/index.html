@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jurassic Park Dinosaurs</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <h1>Jurassic Park Dinosaurs</h1>
+    <ul>
+        {% for dinosaur in dinosaurs %}
+        <li>
+            <h2>{{ dinosaur.name }}</h2>
+            <img src="{{ dinosaur.image }}" alt="{{ dinosaur.name }}">
+            <p>{{ dinosaur.description }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

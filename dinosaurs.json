@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Tyrannosaurus Rex",
+        "description": "A large carnivorous dinosaur.",
+        "image": "https://example.com/trex.jpg"
+    },
+    {
+        "name": "Velociraptor",
+        "description": "A small, agile carnivorous dinosaur.",
+        "image": "https://example.com/velociraptor.jpg"
+    }
+]

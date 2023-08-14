@@ -1,0 +1,103 @@
+Given the requirements, we will use Python with Flask for the backend, and HTML/CSS for the frontend. We will also use a simple JSON file to store the data about the dinosaurs.
+
+Here are the core classes, functions, and methods that will be necessary:
+
+1. `app.py`: This is the main entry point of the application. It will contain the Flask application and the routes for the website.
+
+2. `dinosaurs.json`: This file will contain the data about the dinosaurs. Each dinosaur will be represented as a JSON object with properties for the name, description, and image URL.
+
+3. `templates/index.html`: This is the main HTML template for the website. It will display a list of all dinosaurs.
+
+4. `static/css/styles.css`: This file will contain the CSS styles for the website.
+
+Now, let's write the code for each file.
+
+app.py
+```python
+from flask import Flask, render_template
+import json
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    with open('dinosaurs.json', 'r') as f:
+        dinosaurs = json.load(f)
+    return render_template('index.html', dinosaurs=dinosaurs)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+dinosaurs.json
+```json
+[
+    {
+        "name": "Tyrannosaurus Rex",
+        "description": "A large carnivorous dinosaur.",
+        "image": "https://example.com/trex.jpg"
+    },
+    {
+        "name": "Velociraptor",
+        "description": "A small, agile carnivorous dinosaur.",
+        "image": "https://example.com/velociraptor.jpg"
+    }
+]
+```
+
+templates/index.html
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jurassic Park Dinosaurs</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <h1>Jurassic Park Dinosaurs</h1>
+    <ul>
+        {% for dinosaur in dinosaurs %}
+        <li>
+            <h2>{{ dinosaur.name }}</h2>
+            <img src="{{ dinosaur.image }}" alt="{{ dinosaur.name }}">
+            <p>{{ dinosaur.description }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+```
+
+static/css/styles.css
+```css
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 20px;
+}
+
+img {
+    width: 200px;
+    height: 200px;
+}
+```
+
+Finally, we need a `requirements.txt` file to specify the Python dependencies.
+
+requirements.txt
+```txt
+Flask==1.1.2
+```
+
+To run the application, you would first install the dependencies with `pip install -r requirements.txt`, and then run the application with `python app.py`. The website will be available at `http://localhost:5000`.
