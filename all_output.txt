@@ -1,0 +1,142 @@
+The core classes, functions, and methods necessary for the snake game are:
+
+1. Class `Game`: This class will handle the game logic.
+    - Method `__init__`: Initializes the game.
+    - Method `reset`: Resets the game to its initial state.
+    - Method `draw`: Draws the game board.
+    - Method `move`: Moves the snake.
+    - Method `check_collision`: Checks if the snake has collided with the wall or itself.
+    - Method `check_food`: Checks if the snake has eaten food.
+    - Method `run`: Runs the game loop.
+
+2. Class `Snake`: This class will represent the snake.
+    - Method `__init__`: Initializes the snake.
+    - Method `move`: Moves the snake.
+    - Method `grow`: Grows the snake.
+
+3. Class `Food`: This class will represent the food.
+    - Method `__init__`: Initializes the food.
+    - Method `reset`: Resets the food to a random location.
+
+4. Function `main`: This function will start the game.
+
+Now, let's write the code for each class and function.
+
+snake.py
+```python
+class Snake:
+    def __init__(self):
+        self.length = 1
+        self.positions = [((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))]
+        self.direction = random.choice([UP, DOWN, LEFT, RIGHT])
+
+    def get_head_position(self):
+        return self.positions[0]
+
+    def turn(self, point):
+        if self.length > 1 and (point[0] * -1, point[1] * -1) == self.direction:
+            return
+        else:
+            self.direction = point
+
+    def move(self):
+        cur = self.get_head_position()
+        x, y = self.direction
+        new = (((cur[0]+x)%SCREEN_WIDTH), (cur[1]+y)%SCREEN_HEIGHT)
+        if len(self.positions) > 2 and new in self.positions[2:]:
+            self.reset()
+        else:
+            self.positions.insert(0, new)
+            if len(self.positions) > self.length:
+                self.positions.pop()
+
+    def reset(self):
+        self.length = 1
+        self.positions = [((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))]
+        self.direction = random.choice([UP, DOWN, LEFT, RIGHT])
+
+    def draw(self, surface):
+        for p in self.positions:
+            draw_box(surface, self.color, p)
+```
+
+food.py
+```python
+class Food:
+    def __init__(self):
+        self.position = (0,0)
+        self.color = (0,255,0)
+        self.randomize_position()
+
+    def randomize_position(self):
+        self.position = (random.randint(0, GRID_WIDTH-1)*GRID_SIZE, random.randint(0, GRID_HEIGHT-1)*GRID_SIZE)
+
+    def draw(self, surface):
+        draw_box(surface, self.color, self.position)
+```
+
+game.py
+```python
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.snake = Snake()
+        self.food = Food()
+
+    def check_for_collision(self):
+        if self.snake.get_head_position() == self.food.position:
+            self.snake.length += 1
+            self.food.randomize_position()
+
+    def run(self):
+        clock = pygame.time.Clock()
+        surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == KEYDOWN:
+                    if event.key == K_UP:
+                        self.snake.turn(UP)
+                    elif event.key == K_DOWN:
+                        self.snake.turn(DOWN)
+                    elif event.key == K_LEFT:
+                        self.snake.turn(LEFT)
+                    elif event.key == K_RIGHT:
+                        self.snake.turn(RIGHT)
+
+            self.snake.move()
+            self.check_for_collision()
+            self.draw(surface)
+            pygame.display.update()
+            clock.tick(12)
+
+    def draw(self, surface):
+        surface.fill((0,0,0))
+        self.snake.draw(surface)
+        self.food.draw(surface)
+        screen.blit(surface, (0,0))
+```
+
+main.py
+```python
+def main():
+    game = Game()
+    game.run()
+
+if __name__ == "__main__":
+    main()
+```
+
+requirements.txt
+```txt
+pygame==2.0.1
+```
+
+Please note that you need to install the pygame library to run this game. You can install it using pip:
+
+```bash
+pip install -r requirements.txt
+```
