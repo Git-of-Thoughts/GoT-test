@@ -1,0 +1,138 @@
+Based on the assumptions, we will need the following classes and functions:
+
+1. `Task`: A class to represent a task. It will have properties like `id`, `description`, and `completed`.
+
+2. `TaskManager`: A class to manage tasks. It will have methods like `add_task`, `delete_task`, `mark_task_as_completed`, and `get_all_tasks`.
+
+3. `StorageManager`: A class to handle storage. It will have methods like `save_tasks` and `load_tasks`.
+
+4. `App`: A class to handle user interaction. It will have methods like `run`, `display_menu`, `handle_choice`, `add_task`, `delete_task`, `mark_task_as_completed`, and `view_tasks`.
+
+Now, let's write the code for each class and function.
+
+task.py
+```python
+class Task:
+    def __init__(self, id, description, completed=False):
+        self.id = id
+        self.description = description
+        self.completed = completed
+```
+
+task_manager.py
+```python
+class TaskManager:
+    def __init__(self):
+        self.tasks = []
+
+    def add_task(self, description):
+        id = len(self.tasks) + 1
+        task = Task(id, description)
+        self.tasks.append(task)
+
+    def delete_task(self, id):
+        task = self.get_task_by_id(id)
+        if task:
+            self.tasks.remove(task)
+
+    def mark_task_as_completed(self, id):
+        task = self.get_task_by_id(id)
+        if task:
+            task.completed = True
+
+    def get_all_tasks(self):
+        return self.tasks
+
+    def get_task_by_id(self, id):
+        for task in self.tasks:
+            if task.id == id:
+                return task
+        return None
+```
+
+storage_manager.py
+```python
+import pickle
+
+class StorageManager:
+    def __init__(self, filename):
+        self.filename = filename
+
+    def save_tasks(self, tasks):
+        with open(self.filename, 'wb') as file:
+            pickle.dump(tasks, file)
+
+    def load_tasks(self):
+        try:
+            with open(self.filename, 'rb') as file:
+                return pickle.load(file)
+        except FileNotFoundError:
+            return []
+```
+
+app.py
+```python
+class App:
+    def __init__(self):
+        self.task_manager = TaskManager()
+        self.storage_manager = StorageManager('tasks.dat')
+
+    def run(self):
+        self.task_manager.tasks = self.storage_manager.load_tasks()
+        while True:
+            self.display_menu()
+            choice = input("Enter your choice: ")
+            self.handle_choice(choice)
+
+    def display_menu(self):
+        print("1. Add task")
+        print("2. Delete task")
+        print("3. Mark task as completed")
+        print("4. View tasks")
+        print("5. Exit")
+
+    def handle_choice(self, choice):
+        if choice == '1':
+            self.add_task()
+        elif choice == '2':
+            self.delete_task()
+        elif choice == '3':
+            self.mark_task_as_completed()
+        elif choice == '4':
+            self.view_tasks()
+        elif choice == '5':
+            self.storage_manager.save_tasks(self.task_manager.tasks)
+            exit(0)
+        else:
+            print("Invalid choice. Please try again.")
+
+    def add_task(self):
+        description = input("Enter task description: ")
+        self.task_manager.add_task(description)
+
+    def delete_task(self):
+        id = int(input("Enter task id: "))
+        self.task_manager.delete_task(id)
+
+    def mark_task_as_completed(self):
+        id = int(input("Enter task id: "))
+        self.task_manager.mark_task_as_completed(id)
+
+    def view_tasks(self):
+        tasks = self.task_manager.get_all_tasks()
+        for task in tasks:
+            print(f"ID: {task.id}, Description: {task.description}, Completed: {task.completed}")
+```
+
+main.py
+```python
+from app import App
+
+if __name__ == "__main__":
+    App().run()
+```
+
+requirements.txt
+```
+pickle-mixin==1.0.2
+```
