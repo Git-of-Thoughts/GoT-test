@@ -1,0 +1,19 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+#todo-form {
+    margin-bottom: 1em;
+}
+
+#todo-input {
+    margin-right: 1em;
+}
+
+.todo-item {
+    margin-bottom: 0.5em;
+}
+
+.todo-item.completed {
+    text-decoration: line-through;
+}

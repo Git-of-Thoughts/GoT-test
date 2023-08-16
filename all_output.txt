@@ -1,0 +1,101 @@
+Given the assumptions, we will need the following files:
+
+1. `index.html`: This is the main HTML file that will contain the structure of the to-do list.
+2. `styles.css`: This CSS file will contain all the styles for the to-do list.
+3. `main.js`: This JavaScript file will contain all the logic for the to-do list.
+
+Let's start with the `index.html` file:
+
+index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Todo List</h1>
+    <form id="todo-form">
+        <input type="text" id="todo-input" placeholder="Enter a task">
+        <button type="submit">Add Task</button>
+    </form>
+    <ul id="todo-list"></ul>
+    <script src="main.js"></script>
+</body>
+</html>
+```
+
+Next, we have the `styles.css` file:
+
+styles.css
+```css
+body {
+    font-family: Arial, sans-serif;
+}
+
+#todo-form {
+    margin-bottom: 1em;
+}
+
+#todo-input {
+    margin-right: 1em;
+}
+
+.todo-item {
+    margin-bottom: 0.5em;
+}
+
+.todo-item.completed {
+    text-decoration: line-through;
+}
+```
+
+Finally, we have the `main.js` file:
+
+main.js
+```javascript
+document.getElementById('todo-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    var todoInput = document.getElementById('todo-input');
+    var todoText = todoInput.value.trim();
+
+    if (todoText !== '') {
+        addTodoItem(todoText);
+        todoInput.value = '';
+    }
+});
+
+function addTodoItem(text) {
+    var todoList = document.getElementById('todo-list');
+
+    var listItem = document.createElement('li');
+    listItem.textContent = text;
+    listItem.classList.add('todo-item');
+
+    var deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', function() {
+        todoList.removeChild(listItem);
+    });
+
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.addEventListener('change', function() {
+        if (checkbox.checked) {
+            listItem.classList.add('completed');
+        } else {
+            listItem.classList.remove('completed');
+        }
+    });
+
+    listItem.appendChild(checkbox);
+    listItem.appendChild(deleteButton);
+    todoList.appendChild(listItem);
+}
+```
+
+This code creates a simple to-do list where users can add tasks, mark them as completed, and delete them. The tasks are not saved and will be lost when the page is refreshed.
