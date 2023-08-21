@@ -1,0 +1,110 @@
+Based on the assumptions, we will need the following classes and functions:
+
+1. `Point`: A class to represent a point on the grid. It will have two properties, `x` and `y`, to represent its coordinates.
+
+2. `Snake`: A class to represent the snake. It will have properties for its position, direction, and body. It will have methods to move the snake, grow the snake, and check if the snake has collided with itself.
+
+3. `Game`: A class to represent the game. It will have properties for the snake, apple, and score. It will have methods to start the game, handle user input, update the game state, and draw the game.
+
+4. `main`: A function to start the game.
+
+Now, let's write the code for each of these components.
+
+snake_game.py
+```python
+import random
+import curses
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+class Snake:
+    def __init__(self, head, body):
+        self.head = head
+        self.body = body
+        self.direction = Point(0, 1)
+
+    def move(self):
+        self.body.insert(0, self.head.copy())
+        self.head.x += self.direction.x
+        self.head.y += self.direction.y
+
+    def grow(self):
+        self.body.append(self.body[-1].copy())
+
+    def collided_with_self(self):
+        return self.head in self.body
+
+class Game:
+    def __init__(self, screen):
+        self.score = 0
+        self.screen = screen
+        self.snake = Snake(Point(10, 10), [Point(10, 9), Point(10, 8)])
+        self.apple = Point(random.randint(1, 18), random.randint(1, 58))
+
+    def draw(self):
+        self.screen.clear()
+        for part in self.snake.body:
+            self.screen.addch(part.x, part.y, '#')
+        self.screen.addch(self.snake.head.x, self.snake.head.y, '*')
+        self.screen.addch(self.apple.x, self.apple.y, '@')
+
+    def update(self):
+        if self.snake.head == self.apple:
+            self.score += 1
+            self.snake.grow()
+            self.apple = Point(random.randint(1, 18), random.randint(1, 58))
+        else:
+            self.snake.move()
+
+    def handle_input(self, key):
+        new_direction = Point(0, 0)
+        if key == curses.KEY_DOWN:
+            new_direction = Point(1, 0)
+        elif key == curses.KEY_UP:
+            new_direction = Point(-1, 0)
+        elif key == curses.KEY_LEFT:
+            new_direction = Point(0, -1)
+        elif key == curses.KEY_RIGHT:
+            new_direction = Point(0, 1)
+
+        if (new_direction.x * -1, new_direction.y * -1) != (self.snake.direction.x, self.snake.direction.y):
+            self.snake.direction = new_direction
+
+    def run(self):
+        while True:
+            self.screen.nodelay(1)
+            self.screen.border(0)
+            self.draw()
+            self.screen.refresh()
+            key = self.screen.getch()
+
+            if key != -1:
+                self.handle_input(key)
+
+            self.update()
+
+            if self.snake.collided_with_self():
+                break
+
+def main():
+    curses.initscr()
+    win = curses.newwin(20, 60, 0, 0)
+    win.keypad(1)
+    curses.noecho()
+    curses.curs_set(0)
+    win.border(0)
+    win.nodelay(1)
+
+    game = Game(win)
+    game.run()
+
+    curses.endwin()
+
+if __name__ == "__main__":
+    main()
+```
+
+This is a simple implementation of a snake game in Python using the curses library for terminal-based user interfaces. The game starts with a snake of length 3 and an apple at random positions. The snake moves in the direction specified by the user, and grows in length when it eats an apple. The game ends when the snake collides with itself.
