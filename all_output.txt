@@ -1,0 +1,126 @@
+The core classes, functions, and methods necessary for the snake game are:
+
+1. `Snake`: This class will represent the snake in the game. It will have methods to move the snake, grow the snake, and check if the snake has collided with itself.
+
+2. `Apple`: This class will represent the apple in the game. It will have a method to place the apple in a random location within the game grid.
+
+3. `Game`: This class will represent the game itself. It will have methods to start the game, end the game, and update the game state.
+
+4. `main`: This function will be the entry point of the game. It will create an instance of the `Game` class and start the game.
+
+Now, let's write the code for each of these classes and functions.
+
+snake.py
+```python
+class Snake:
+    def __init__(self):
+        self.length = 1
+        self.positions = [((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))]
+        self.direction = random.choice([UP, DOWN, LEFT, RIGHT])
+
+    def get_head_position(self):
+        return self.positions[0]
+
+    def turn(self, point):
+        if self.length > 1 and (point[0]*-1, point[1]*-1) == self.direction:
+            return
+        else:
+            self.direction = point
+
+    def move(self):
+        cur = self.get_head_position()
+        x, y = self.direction
+        new = (((cur[0]+(x*GRIDSIZE)) % SCREEN_WIDTH), (cur[1]+(y*GRIDSIZE)) % SCREEN_HEIGHT)
+        if len(self.positions) > 2 and new in self.positions[2:]:
+            self.reset()
+        else:
+            self.positions.insert(0, new)
+            if len(self.positions) > self.length:
+                self.positions.pop()
+
+    def reset(self):
+        self.length = 1
+        self.positions = [((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))]
+        self.direction = random.choice([UP, DOWN, LEFT, RIGHT])
+
+    def draw(self, surface):
+        for p in self.positions:
+            draw_box(surface, self.color, p)
+```
+
+apple.py
+```python
+class Apple:
+    def __init__(self):
+        self.position = (0, 0)
+        self.color = (223, 163, 49)
+        self.randomize_position()
+
+    def randomize_position(self):
+        self.position = (random.randint(0, GRID_WIDTH-1)*GRIDSIZE, random.randint(0, GRID_HEIGHT-1)*GRIDSIZE)
+
+    def draw(self, surface):
+        draw_box(surface, self.color, self.position)
+```
+
+game.py
+```python
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.snake = Snake()
+        self.apple = Apple()
+
+    def check_for_collision(self):
+        if self.snake.get_head_position() == self.apple.position:
+            self.snake.length += 1
+            self.apple.randomize_position()
+
+    def update(self):
+        self.snake.move()
+        self.check_for_collision()
+
+    def draw(self, surface):
+        self.snake.draw(surface)
+        self.apple.draw(surface)
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    self.snake.turn(UP)
+                elif event.key == pygame.K_DOWN:
+                    self.snake.turn(DOWN)
+                elif event.key == pygame.K_LEFT:
+                    self.snake.turn(LEFT)
+                elif event.key == pygame.K_RIGHT:
+                    self.snake.turn(RIGHT)
+
+    def run(self):
+        while True:
+            self.handle_events()
+            self.update()
+            self.draw()
+            pygame.display.update()
+            pygame.time.Clock().tick(10)
+```
+
+main.py
+```python
+def main():
+    game = Game()
+    game.run()
+
+if __name__ == "__main__":
+    main()
+```
+
+requirements.txt
+```
+pygame==2.0.1
+```
+
+Please note that you need to install the pygame library to run this game. You can install it by running `pip install -r requirements.txt`.
