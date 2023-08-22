@@ -1,0 +1,74 @@
+The game will be implemented in a single Python file, `snake_game.py`. The core classes and functions will be:
+
+1. `Snake`: This class will represent the snake itself. It will have methods to move the snake, grow the snake, and check if the snake has collided with itself.
+2. `Food`: This class will represent the food that the snake eats. It will have a method to place the food at a random location on the grid.
+3. `Game`: This class will represent the game as a whole. It will have methods to start the game, handle user input, update the game state, and display the current state of the game.
+4. `main`: This function will be the entry point of the program. It will create a `Game` object and start the game.
+
+snake_game.py
+```python
+import random
+import curses
+
+class Snake:
+    def __init__(self, window, head_pos):
+        self.body = [head_pos]
+        self.window = window
+
+    def move(self, direction):
+        # Move the snake in the given direction
+        pass
+
+    def grow(self):
+        # Add a new segment to the snake's body
+        pass
+
+    def has_collided_with_self(self):
+        # Check if the snake has collided with itself
+        pass
+
+class Food:
+    def __init__(self, window, pos):
+        self.pos = pos
+        self.window = window
+
+    def place(self):
+        # Place the food at a random location on the grid
+        pass
+
+class Game:
+    def __init__(self, window):
+        self.window = window
+        self.snake = Snake(window, (10, 10))
+        self.food = Food(window, self.snake.body[0])
+
+    def start(self):
+        # Start the game
+        pass
+
+    def handle_input(self):
+        # Handle user input
+        pass
+
+    def update(self):
+        # Update the game state
+        pass
+
+    def display(self):
+        # Display the current state of the game
+        pass
+
+def main():
+    # Create a new window using curses
+    window = curses.initscr()
+    curses.curs_set(0)
+    window.timeout(100)
+
+    game = Game(window)
+    game.start()
+
+if __name__ == "__main__":
+    main()
+```
+
+This is the basic structure of the game. The next step is to implement the logic for each method in the `Snake`, `Food`, and `Game` classes.
