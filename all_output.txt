@@ -1,0 +1,137 @@
+Assumptions:
+
+1. The game will be a simple text-based snake game.
+2. The snake will be controlled using the arrow keys.
+3. The snake will grow by 1 unit each time it eats the food.
+4. The game will end if the snake hits the edge of the screen or itself.
+5. The game will not have levels or increasing difficulty.
+6. The score will be the number of food items eaten by the snake.
+7. The game will continue until the player loses.
+
+Core Classes, Functions, and Methods:
+
+1. Class `Game`: This will be the main class that controls the game logic. It will have methods to start the game, handle user input, update the game state, and check for game over conditions.
+2. Class `Snake`: This will represent the snake. It will have methods to move the snake, grow the snake, and check if the snake has collided with itself.
+3. Class `Food`: This will represent the food. It will have a method to place the food at a random location on the screen.
+4. Function `main`: This will be the entry point of the program. It will create an instance of the `Game` class and start the game.
+
+Now let's write the code for each of these classes and functions.
+
+main.py
+```python
+from game import Game
+
+def main():
+    game = Game()
+    game.start()
+
+if __name__ == "__main__":
+    main()
+```
+
+game.py
+```python
+import curses
+from snake import Snake
+from food import Food
+
+class Game:
+    def __init__(self):
+        self.snake = Snake()
+        self.food = Food()
+        self.score = 0
+
+    def start(self):
+        # Initialize the screen
+        self.screen = curses.initscr()
+        curses.curs_set(0)
+        self.screen.keypad(1)
+        self.screen.timeout(100)
+
+        # Game loop
+        while True:
+            self.screen.clear()
+            self.screen.addstr(str(self.score) + ' ')
+            self.snake.draw(self.screen)
+            self.food.draw(self.screen)
+            self.screen.refresh()
+
+            # Handle user input
+            key = self.screen.getch()
+            self.snake.change_direction(key)
+
+            # Update game state
+            if self.snake.move() == "COLLISION":
+                break
+            if self.snake.head == self.food.position:
+                self.score += 1
+                self.snake.grow()
+                self.food = Food()
+
+        # End the game
+        curses.endwin()
+
+```
+
+snake.py
+```python
+import curses
+from random import randint
+
+class Snake:
+    def __init__(self):
+        self.body = [(10, 10), (10, 9), (10, 8)]
+        self.direction = curses.KEY_RIGHT
+
+    def change_direction(self, key):
+        if key in [curses.KEY_RIGHT, curses.KEY_LEFT, curses.KEY_UP, curses.KEY_DOWN]:
+            self.direction = key
+
+    def move(self):
+        head = self.body[0]
+        if self.direction == curses.KEY_RIGHT:
+            new_head = (head[0], head[1] + 1)
+        elif self.direction == curses.KEY_LEFT:
+            new_head = (head[0], head[1] - 1)
+        elif self.direction == curses.KEY_UP:
+            new_head = (head[0] - 1, head[1])
+        elif self.direction == curses.KEY_DOWN:
+            new_head = (head[0] + 1, head[1])
+
+        if new_head in self.body or new_head[0] in [0, 20] or new_head[1] in [0, 60]:
+            return "COLLISION"
+        else:
+            self.body.insert(0, new_head)
+            self.body.pop()
+
+    def grow(self):
+        self.body.append(self.body[-1])
+
+    def draw(self, screen):
+        for part in self.body:
+            screen.addch(part[0], part[1], '#')
+
+```
+
+food.py
+```python
+import curses
+from random import randint
+
+class Food:
+    def __init__(self):
+        self.position = (randint(1, 19), randint(1, 59))
+
+    def draw(self, screen):
+        screen.addch(self.position[0], self.position[1], '*')
+
+```
+
+Please note that you need to have `curses` library installed in your Python environment to run this game. You can install it using pip:
+
+requirements.txt
+```txt
+windows-curses
+```
+
+To run the game, simply run the `main.py` script.
