@@ -1,0 +1,117 @@
+The core classes, functions, and methods necessary for this game are:
+
+1. `Game` class: This will be the main class that controls the game logic.
+2. `Snake` class: This class will represent the snake in the game.
+3. `Food` class: This class will represent the food in the game.
+4. `Point` class: This class will represent a point in the 2D game grid.
+5. `Direction` enum: This enum will represent the possible directions the snake can move.
+6. `game_loop` function: This function will be the main game loop.
+7. `draw` method: This method will draw the game state to the console.
+8. `handle_input` method: This method will handle user input.
+9. `update` method: This method will update the game state.
+10. `check_collision` method: This method will check for collisions.
+
+Now, let's write the code for each of these components.
+
+snake_game.py
+```python
+import enum
+import random
+import curses
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+class Direction(enum.Enum):
+    UP = 1
+    DOWN = 2
+    LEFT = 3
+    RIGHT = 4
+
+class Snake:
+    def __init__(self, head, direction):
+        self.body = [head]
+        self.direction = direction
+
+    def move(self):
+        head = self.body[0]
+        if self.direction == Direction.UP:
+            self.body.insert(0, Point(head.x, head.y - 1))
+        elif self.direction == Direction.DOWN:
+            self.body.insert(0, Point(head.x, head.y + 1))
+        elif self.direction == Direction.LEFT:
+            self.body.insert(0, Point(head.x - 1, head.y))
+        elif self.direction == Direction.RIGHT:
+            self.body.insert(0, Point(head.x + 1, head.y))
+
+    def eat(self):
+        self.move()
+
+    def die(self):
+        self.body.pop()
+
+class Food:
+    def __init__(self, position):
+        self.position = position
+
+class Game:
+    def __init__(self, screen, width, height):
+        self.screen = screen
+        self.width = width
+        self.height = height
+        self.snake = Snake(Point(width // 2, height // 2), Direction.UP)
+        self.food = Food(Point(random.randint(0, width - 1), random.randint(0, height - 1)))
+        self.score = 0
+
+    def draw(self):
+        self.screen.clear()
+        for part in self.snake.body:
+            self.screen.addch(part.y, part.x, '#')
+        self.screen.addch(self.food.position.y, self.food.position.x, '*')
+        self.screen.addstr(0, 0, f'Score: {self.score}')
+
+    def handle_input(self):
+        key = self.screen.getch()
+        if key == curses.KEY_UP and self.snake.direction != Direction.DOWN:
+            self.snake.direction = Direction.UP
+        elif key == curses.KEY_DOWN and self.snake.direction != Direction.UP:
+            self.snake.direction = Direction.DOWN
+        elif key == curses.KEY_LEFT and self.snake.direction != Direction.RIGHT:
+            self.snake.direction = Direction.LEFT
+        elif key == curses.KEY_RIGHT and self.snake.direction != Direction.LEFT:
+            self.snake.direction = Direction.RIGHT
+
+    def update(self):
+        self.snake.move()
+        if self.snake.body[0] == self.food.position:
+            self.snake.eat()
+            self.score += 1
+            self.food = Food(Point(random.randint(0, self.width - 1), random.randint(0, self.height - 1)))
+        else:
+            self.snake.die()
+
+    def check_collision(self):
+        head = self.snake.body[0]
+        if head.x < 0 or head.y < 0 or head.x >= self.width or head.y >= self.height or head in self.snake.body[1:]:
+            return True
+        return False
+
+def game_loop(screen):
+    curses.curs_set(0)
+    screen.nodelay(1)
+    width, height = screen.getmaxyx()
+    game = Game(screen, width, height)
+    while True:
+        game.draw()
+        game.handle_input()
+        game.update()
+        if game.check_collision():
+            break
+
+if __name__ == '__main__':
+    curses.wrapper(game_loop)
+```
+
+This is a single-file Python script, so there are no other files to import. The `curses` library is used for handling the console interface, and it is included in the Python standard library, so there is no need for a `requirements.txt` file.
