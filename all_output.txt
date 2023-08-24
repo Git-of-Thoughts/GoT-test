@@ -1,0 +1,109 @@
+The core classes and functions for the snake game will be:
+
+1. `Game`: This class will handle the game logic, including the game loop, user input, and game over conditions.
+2. `Snake`: This class will represent the snake. It will have methods to move the snake, grow the snake, and check if the snake has collided with itself.
+3. `Food`: This class will represent the food. It will have a method to place the food at a random location.
+4. `Screen`: This class will handle the display of the game, including the snake, food, and score.
+
+Now, let's write the code for each of these classes and functions.
+
+snake.py
+```python
+class Snake:
+    def __init__(self):
+        self.body = [(10, 10), (10, 11), (10, 12)]
+        self.direction = "UP"
+
+    def move(self):
+        head = self.get_head()
+        if self.direction == "UP":
+            self.body.insert(0, (head[0] - 1, head[1]))
+        elif self.direction == "DOWN":
+            self.body.insert(0, (head[0] + 1, head[1]))
+        elif self.direction == "LEFT":
+            self.body.insert(0, (head[0], head[1] - 1))
+        elif self.direction == "RIGHT":
+            self.body.insert(0, (head[0], head[1] + 1))
+        self.body.pop()
+
+    def grow(self):
+        self.body.append(self.body[-1])
+
+    def get_head(self):
+        return self.body[0]
+
+    def has_collided_with_self(self):
+        return self.get_head() in self.body[1:]
+```
+
+food.py
+```python
+import random
+
+class Food:
+    def __init__(self):
+        self.position = (0, 0)
+
+    def place(self, snake_body):
+        while True:
+            x = random.randint(0, 19)
+            y = random.randint(0, 19)
+            if (x, y) not in snake_body:
+                self.position = (x, y)
+                break
+```
+
+screen.py
+```python
+class Screen:
+    def __init__(self):
+        self.score = 0
+
+    def display(self, snake, food):
+        for i in range(20):
+            for j in range(20):
+                if (i, j) in snake.body:
+                    print("S", end="")
+                elif (i, j) == food.position:
+                    print("F", end="")
+                else:
+                    print(".", end="")
+            print()
+        print(f"Score: {self.score}")
+
+    def increment_score(self):
+        self.score += 1
+```
+
+game.py
+```python
+import time
+from snake import Snake
+from food import Food
+from screen import Screen
+
+class Game:
+    def __init__(self):
+        self.snake = Snake()
+        self.food = Food()
+        self.screen = Screen()
+        self.food.place(self.snake.body)
+
+    def game_loop(self):
+        while True:
+            self.screen.display(self.snake, self.food)
+            self.snake.move()
+            if self.snake.get_head() == self.food.position:
+                self.snake.grow()
+                self.screen.increment_score()
+                self.food.place(self.snake.body)
+            if self.snake.has_collided_with_self():
+                break
+            time.sleep(0.1)
+
+if __name__ == "__main__":
+    game = Game()
+    game.game_loop()
+```
+
+Please note that this is a simple implementation of the snake game and does not handle user input for controlling the snake's movement. You would need to use a library like `curses` or `pygame` to handle real-time user input in the console.
