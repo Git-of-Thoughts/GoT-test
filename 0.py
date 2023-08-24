@@ -12,7 +12,8 @@ for _ in range(t):
     else:
         to_reverse = start_with_1_end_with_0
     to_reverse.sort(key=len)
-    print(len(to_reverse) // 2)
-    for i in range(len(to_reverse) // 2):
+    reversals = max(0, abs(len(start_with_0_end_with_1) - len(start_with_1_end_with_0)) - 1)
+    print(reversals)
+    for i in range(reversals):
         print(words.index(to_reverse[i]) + 1, end=' ')
     print()
