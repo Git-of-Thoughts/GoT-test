@@ -1,0 +1,23 @@
+classDiagram
+    class Snake{
+        +list body
+        +str direction
+        +move()
+        +grow()
+    }
+    class Food{
+        +tuple position
+        +respawn()
+    }
+    class Game{
+        +Snake snake
+        +Food food
+        +int score
+        +bool game_over
+        +start_game()
+        +end_game()
+        +update_game_state()
+        +render_game_state()
+    }
+    Game "1" -- "1" Snake: has
+    Game "1" -- "1" Food: has
