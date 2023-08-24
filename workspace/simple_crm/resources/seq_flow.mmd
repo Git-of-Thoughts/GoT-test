@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant M as Main
+    participant U as User
+    participant C as Contact
+    participant I as Interaction
+    M->>U: create_user(username, password)
+    M->>U: login_user(username, password)
+    U->>C: create_contact(name, email, phone)
+    U->>C: update_contact(id, name, email, phone)
+    U->>C: delete_contact(id)
+    U->>I: create_interaction(note, date, contact)
+    U->>I: update_interaction(id, note, date, contact)
+    U->>I: delete_interaction(id)
+    M->>U: logout_user()
