@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant B as Bird
+    participant O as Obstacle
+    participant S as Scoreboard
+    M->>G: create game
+    G->>B: create bird
+    G->>O: create obstacles
+    G->>S: create scoreboard
+    loop Game Loop
+        M->>G: start game
+        G->>B: bird.update()
+        G->>O: obstacle.update()
+        G->>S: scoreboard.update(score)
+        G-->>M: game_over
+    end
+    M->>G: end game
