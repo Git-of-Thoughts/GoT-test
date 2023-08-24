@@ -1,0 +1,39 @@
+classDiagram
+    class Bird{
+        +int x
+        +int y
+        +int velocity
+        +int gravity
+        +int flap_power
+        +bool is_alive
+        +__init__(x: int, y: int, velocity: int, gravity: int, flap_power: int)
+        +flap()
+        +update()
+    }
+    class Obstacle{
+        +int x
+        +int y
+        +int width
+        +int gap_height
+        +bool passed
+        +__init__(x: int, y: int, width: int, gap_height: int)
+        +update()
+    }
+    class Game{
+        +Bird bird
+        +list[Obstacle] obstacles
+        +int score
+        +bool game_over
+        +__init__(bird: Bird)
+        +start()
+        +update()
+        +end()
+    }
+    class Scoreboard{
+        +int high_score
+        +__init__()
+        +update(score: int)
+    }
+    Bird "1" -- "1" Game: controls
+    Obstacle "*" -- "1" Game: obstacles
+    Game "1" -- "1" Scoreboard: updates
