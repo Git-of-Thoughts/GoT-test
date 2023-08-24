@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant S as Snake
+    participant F as Food
+    M->>G: start_game()
+    loop Game Loop
+        G->>S: move()
+        G->>G: update_game_state()
+        G->>G: render_game_state()
+        Note over G: Check for game over
+    end
+    G->>M: end_game()
