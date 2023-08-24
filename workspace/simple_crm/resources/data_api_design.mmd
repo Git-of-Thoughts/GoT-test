@@ -1,0 +1,23 @@
+classDiagram
+    class User{
+        +str username
+        +str password
+        +__init__(username: str, password: str)
+        +check_password(password: str): bool
+    }
+    class Contact{
+        +int id
+        +str name
+        +str email
+        +str phone
+        +__init__(name: str, email: str, phone: str)
+    }
+    class Interaction{
+        +int id
+        +str note
+        +datetime date
+        +Contact contact
+        +__init__(note: str, date: datetime, contact: Contact)
+    }
+    User "1" -- "*" Contact: has
+    Contact "1" -- "*" Interaction: has
