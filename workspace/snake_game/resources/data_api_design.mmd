@@ -1,0 +1,25 @@
+classDiagram
+    class Game{
+        +start_game()
+        +pause_game()
+        +resume_game()
+        +end_game()
+    }
+    class Snake{
+        +move()
+        +eat(Food)
+        +grow()
+        +die()
+    }
+    class Food{
+        +generate()
+    }
+    class ScoreBoard{
+        +update_score(int)
+        +reset_score()
+        +get_high_score(): int
+    }
+    Game "1" -- "1" Snake: controls
+    Game "1" -- "1" Food: controls
+    Game "1" -- "1" ScoreBoard: controls
+    Snake "1" -- "0..1" Food: eats
