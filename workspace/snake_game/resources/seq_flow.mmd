@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant M as main
+    participant G as Game
+    participant S as Snake
+    participant F as Food
+    M->>G: create game
+    G->>S: create snake
+    G->>F: create food
+    loop game not over
+        M->>G: start game
+        G->>S: move snake
+        S->>G: check collision
+        G->>F: generate food
+        G->>G: increase speed
+        G->>G: update score
+    end
+    G->>M: end game
