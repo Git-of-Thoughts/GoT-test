@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant S as Snake
+    participant F as Food
+    participant SB as ScoreBoard
+    M->>G: start game
+    loop game loop
+        G->>S: move snake
+        G->>S: check collision
+        alt if snake eats food
+            G->>S: grow snake
+            G->>F: generate new food
+            G->>SB: update score
+        end
+        alt if snake hits wall or itself
+            G->>SB: update high score if necessary
+            G->>G: end game
+        end
+    end
