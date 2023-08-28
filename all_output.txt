@@ -1,0 +1,118 @@
+The game will be implemented using Python's curses library, which is used for creating text-based user interfaces. The game will have the following core classes and functions:
+
+1. `Snake`: This class will represent the snake in the game. It will have methods for moving the snake, growing the snake, and checking if the snake has collided with itself.
+
+2. `Food`: This class will represent the food in the game. It will have a method for placing the food at a random location on the game board.
+
+3. `Game`: This class will represent the game itself. It will have methods for starting the game, ending the game, and updating the game state.
+
+4. `main`: This function will be the entry point of the game. It will create an instance of the `Game` class and start the game.
+
+Now, let's write the code for each of these classes and functions.
+
+snake.py
+```python
+import random
+
+class Snake:
+    def __init__(self):
+        self.body = [(10, 10), (10, 9), (10, 8)]
+        self.direction = 'RIGHT'
+
+    def move(self):
+        head = self.body[0]
+        if self.direction == 'UP':
+            self.body.insert(0, (head[0] - 1, head[1]))
+        elif self.direction == 'DOWN':
+            self.body.insert(0, (head[0] + 1, head[1]))
+        elif self.direction == 'LEFT':
+            self.body.insert(0, (head[0], head[1] - 1))
+        else:
+            self.body.insert(0, (head[0], head[1] + 1))
+        self.body.pop()
+
+    def grow(self):
+        self.body.append(self.body[-1])
+
+    def collided_with_self(self):
+        return self.body[0] in self.body[1:]
+```
+
+food.py
+```python
+import random
+
+class Food:
+    def __init__(self):
+        self.position = (random.randint(1, 18), random.randint(1, 58))
+
+    def place(self):
+        self.position = (random.randint(1, 18), random.randint(1, 58))
+```
+
+game.py
+```python
+import curses
+from snake import Snake
+from food import Food
+
+class Game:
+    def __init__(self, window):
+        self.window = window
+        self.snake = Snake()
+        self.food = Food()
+
+    def start(self):
+        while True:
+            self.window.clear()
+            self.window.border(0)
+            self.snake.move()
+            if self.snake.body[0] == self.food.position:
+                self.snake.grow()
+                self.food.place()
+            if (self.snake.collided_with_self() or
+                self.snake.body[0][0] == 0 or
+                self.snake.body[0][0] == 19 or
+                self.snake.body[0][1] == 0 or
+                self.snake.body[0][1] == 59):
+                break
+            self.window.addch(self.food.position[0], self.food.position[1], '#')
+            for position in self.snake.body:
+                self.window.addch(position[0], position[1], '*')
+            self.window.refresh()
+            curses.napms(100)
+```
+
+main.py
+```python
+import curses
+from game import Game
+
+def main(stdscr):
+    curses.curs_set(0)
+    window = curses.newwin(20, 60, 0, 0)
+    window.keypad(1)
+    window.timeout(100)
+    game = Game(window)
+    game.start()
+
+if __name__ == "__main__":
+    curses.wrapper(main)
+```
+
+requirements.txt
+```
+curses
+```
+
+To run the game, you need to install the required package using pip:
+
+```
+pip install -r requirements.txt
+```
+
+Then, you can start the game by running the main.py script:
+
+```
+python main.py
+```
