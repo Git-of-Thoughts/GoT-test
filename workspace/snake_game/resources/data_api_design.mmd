@@ -1,0 +1,28 @@
+classDiagram
+    class Game{
+        -int score
+        -int high_score
+        -Snake snake
+        -Food food
+        +__init__(self)
+        +run(self)
+        +reset(self)
+        +update_score(self)
+        +draw(self)
+    }
+    class Snake{
+        -list body
+        -str direction
+        +__init__(self)
+        +move(self)
+        +grow(self)
+        +draw(self)
+    }
+    class Food{
+        -tuple position
+        +__init__(self)
+        +reposition(self)
+        +draw(self)
+    }
+    Game "1" -- "1" Snake: has
+    Game "1" -- "1" Food: has
