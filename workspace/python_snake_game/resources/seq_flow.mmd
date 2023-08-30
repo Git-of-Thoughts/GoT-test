@@ -1,0 +1,27 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant S as Snake
+    participant F as Food
+    participant SM as ScoreManager
+    M->>G: start_game()
+    G->>SM: load_high_score()
+    loop Game Loop
+        G->>S: move()
+        alt Collision with Food
+            G->>F: generate()
+            G->>S: grow()
+            G->>G: increase score
+        end
+        alt Collision with Self or Border
+            G->>G: end_game()
+        end
+        alt Pause Command
+            G->>G: pause_game()
+            opt Resume Command
+                G->>G: resume_game()
+            end
+        end
+    end
+    G->>SM: save_high_score()
+    G->>M: end game
