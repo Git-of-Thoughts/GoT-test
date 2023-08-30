@@ -1,0 +1,31 @@
+classDiagram
+    class Main{
+        +void run()
+    }
+    class Game{
+        +bool is_running
+        +int score
+        +void start_game()
+        +void pause_game()
+        +void resume_game()
+        +void end_game()
+    }
+    class Snake{
+        +list body
+        +str direction
+        +void move()
+        +void grow()
+    }
+    class Food{
+        +tuple position
+        +void generate()
+    }
+    class ScoreManager{
+        +int high_score
+        +void load_high_score()
+        +void save_high_score()
+    }
+    Main -- Game: initiates
+    Game "1" -- "1" Snake: controls
+    Game "1" -- "1" Food: controls
+    Game "1" -- "1" ScoreManager: uses

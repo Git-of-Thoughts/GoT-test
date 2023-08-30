@@ -1,0 +1,103 @@
+The core classes, functions, and methods necessary for the snake game are:
+
+1. `Game`: This class will represent the game itself. It will contain methods to start the game, handle user input, update the game state, and check for game over conditions.
+
+2. `Snake`: This class will represent the snake. It will contain methods to move the snake, grow the snake, and check if the snake has collided with itself.
+
+3. `Food`: This class will represent the food. It will contain a method to place the food at a random location within the game area.
+
+Now, let's write the code for each of these classes.
+
+snake.py
+```python
+class Snake:
+    def __init__(self):
+        self.body = [(10, 10), (10, 11), (10, 12)]
+        self.direction = "N"
+
+    def move(self):
+        head = self.body[0]
+        if self.direction == "N":
+            self.body = [(head[0]-1, head[1])] + self.body[:-1]
+        elif self.direction == "S":
+            self.body = [(head[0]+1, head[1])] + self.body[:-1]
+        elif self.direction == "E":
+            self.body = [(head[0], head[1]+1)] + self.body[:-1]
+        elif self.direction == "W":
+            self.body = [(head[0], head[1]-1)] + self.body[:-1]
+
+    def grow(self):
+        self.body.append(self.body[-1])
+
+    def collided_with_self(self):
+        return len(self.body) != len(set(self.body))
+```
+
+food.py
+```python
+import random
+
+class Food:
+    def __init__(self, game_width, game_height):
+        self.position = (random.randint(0, game_width-1), random.randint(0, game_height-1))
+
+    def place(self, game_width, game_height):
+        self.position = (random.randint(0, game_width-1), random.randint(0, game_height-1))
+```
+
+game.py
+```python
+import os
+import time
+from snake import Snake
+from food import Food
+
+class Game:
+    def __init__(self, game_width=20, game_height=20):
+        self.game_width = game_width
+        self.game_height = game_height
+        self.snake = Snake()
+        self.food = Food(game_width, game_height)
+
+    def draw(self):
+        os.system('clear')
+        for i in range(self.game_height):
+            for j in range(self.game_width):
+                if (i, j) in self.snake.body:
+                    print('S', end='')
+                elif (i, j) == self.food.position:
+                    print('F', end='')
+                else:
+                    print('.', end='')
+            print()
+
+    def update(self):
+        self.snake.move()
+        if self.snake.body[0] == self.food.position:
+            self.snake.grow()
+            self.food.place(self.game_width, self.game_height)
+
+    def is_game_over(self):
+        head = self.snake.body[0]
+        return (head[0] < 0 or head[1] < 0 or head[0] >= self.game_width or head[1] >= self.game_height or self.snake.collided_with_self())
+
+    def play(self):
+        while not self.is_game_over():
+            self.draw()
+            self.update()
+            time.sleep(0.2)
+```
+
+main.py
+```python
+from game import Game
+
+def main():
+    game = Game()
+    game.play()
+
+if __name__ == "__main__":
+    main()
+```
+
+Please note that this code does not handle user input to control the snake. This is because handling keyboard input in a console application is platform dependent and beyond the scope of this question.
