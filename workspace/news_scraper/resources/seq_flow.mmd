@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant M as Main
+    participant S as Scraper
+    participant E as Emailer
+    participant Sch as Scheduler
+    participant L as Logger
+    M->>S: create Scraper
+    M->>E: create Emailer
+    M->>L: create Logger
+    M->>Sch: create Scheduler
+    Sch->>S: schedule scrape
+    S->>E: send news
+    E->>L: log errors
+    Sch->>M: end program
