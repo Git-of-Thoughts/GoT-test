@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant S as Solver
+    participant GUI as GUI
+    M->>G: create game
+    G-->>M: game created
+    M->>S: create solver with game
+    S-->>M: solver created
+    M->>GUI: create GUI with game and solver
+    GUI-->>M: GUI created
+    GUI->>G: reset game
+    G-->>GUI: game reset
+    GUI->>S: find best move
+    S-->>GUI: best move found
+    GUI->>G: update board with best move
+    G-->>GUI: board updated
+    GUI->>G: check game over
+    G-->>GUI: game over status

@@ -1,0 +1,26 @@
+classDiagram
+    class Game{
+        +str board[3][3]
+        +bool game_over
+        +str winner
+        +__init__()
+        +reset_game()
+        +check_game_over()
+    }
+    class Solver{
+        +Game game
+        +__init__(game: Game)
+        +minimax(board: list, depth: int, isMaximizing: bool): int
+        +find_best_move(board: list): tuple
+    }
+    class GUI{
+        +Game game
+        +Solver solver
+        +__init__(game: Game, solver: Solver)
+        +draw_board()
+        +update_board()
+        +reset_board()
+    }
+    Game "1" -- "1" Solver: has
+    Game "1" -- "1" GUI: has
+    Solver "1" -- "1" GUI: has
