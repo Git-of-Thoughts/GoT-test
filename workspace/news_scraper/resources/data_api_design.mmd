@@ -1,0 +1,27 @@
+classDiagram
+    class Scraper{
+        +str url
+        +list news
+        +__init__(url: str)
+        +scrape(): list
+    }
+    class Emailer{
+        +str recipient
+        +str sender
+        +str password
+        +__init__(recipient: str, sender: str, password: str)
+        +send(news: list)
+    }
+    class Scheduler{
+        +str interval
+        +__init__(interval: str)
+        +schedule(task: function)
+    }
+    class Logger{
+        +str filename
+        +__init__(filename: str)
+        +log(message: str)
+    }
+    Scraper "1" --> "1" Emailer: sends news to
+    Emailer "1" --> "1" Logger: logs errors to
+    Scheduler "1" --> "1" Scraper: schedules
