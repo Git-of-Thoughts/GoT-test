@@ -1,0 +1,73 @@
+Based on the task, we will need to create a Python script that will scrape the Donews website for technology news and then send the news to a specified email address. We will use the BeautifulSoup library for web scraping and the smtplib library for sending emails.
+
+Here are the core classes, functions, and methods that will be necessary:
+
+1. `NewsScraper`: This class will be responsible for scraping the Donews website for technology news. It will have the following methods:
+    - `__init__`: This method will initialize the `NewsScraper` object.
+    - `get_news`: This method will scrape the Donews website for technology news and return the news as a string.
+
+2. `EmailSender`: This class will be responsible for sending the news to a specified email address. It will have the following methods:
+    - `__init__`: This method will initialize the `EmailSender` object.
+    - `send_email`: This method will send an email with the news to a specified email address.
+
+3. `main`: This function will create a `NewsScraper` object, use it to get the news, create an `EmailSender` object, and use it to send the news to a specified email address.
+
+Now, let's write the code for each of these classes and functions.
+
+news_scraper.py
+```python
+from bs4 import BeautifulSoup
+import requests
+
+class NewsScraper:
+    def __init__(self, url):
+        self.url = url
+
+    def get_news(self):
+        response = requests.get(self.url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        news = soup.find_all('div', class_='news-item')
+        news_text = [item.text for item in news]
+        return '\n'.join(news_text)
+```
+
+email_sender.py
+```python
+import smtplib
+
+class EmailSender:
+    def __init__(self, sender_email, sender_password, receiver_email):
+        self.sender_email = sender_email
+        self.sender_password = sender_password
+        self.receiver_email = receiver_email
+
+    def send_email(self, subject, body):
+        message = f'Subject: {subject}\n\n{body}'
+        with smtplib.SMTP('smtp.163.com', 587) as server:
+            server.login(self.sender_email, self.sender_password)
+            server.sendmail(self.sender_email, self.receiver_email, message)
+```
+
+main.py
+```python
+from news_scraper import NewsScraper
+from email_sender import EmailSender
+
+def main():
+    news_scraper = NewsScraper('http://www.donews.com/news/')
+    news = news_scraper.get_news()
+
+    email_sender = EmailSender('sender_email', 'sender_password', 'cqtxh@163.com')
+    email_sender.send_email('Daily Technology News', news)
+
+if __name__ == '__main__':
+    main()
+```
+
+requirements.txt
+```
+beautifulsoup4==4.9.3
+requests==2.25.1
+```
+
+Please replace 'sender_email' and 'sender_password' with your 163.com email address and password. Also, make sure to install the required packages by running `pip install -r requirements.txt`.
