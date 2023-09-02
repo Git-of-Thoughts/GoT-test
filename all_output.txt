@@ -1,0 +1,105 @@
+The core classes and functions that will be necessary are:
+
+1. `Game` class: This class will handle the game logic, including the game loop, user input, and game over conditions.
+2. `Snake` class: This class will represent the snake. It will have methods to move the snake, grow the snake, and check if the snake has collided with itself.
+3. `Food` class: This class will represent the food. It will have a method to place the food at a random location on the game board.
+4. `Point` class: This class will represent a point on the game board. It will be used to represent the position of the snake and the food.
+
+Now, let's write the code for each of these classes.
+
+snake_game.py
+```python
+import random
+from snake import Snake
+from food import Food
+from point import Point
+
+class Game:
+    def __init__(self, board_size):
+        self.board_size = board_size
+        self.snake = Snake(Point(board_size // 2, board_size // 2))
+        self.food = Food(board_size)
+
+    def game_loop(self):
+        while True:
+            self.snake.move()
+            if self.snake.head() == self.food.position:
+                self.snake.grow()
+                self.food = Food(self.board_size)
+            elif (self.snake.self_collision() or
+                  not self.snake.in_bounds(self.board_size)):
+                break
+            self.draw_board()
+
+    def draw_board(self):
+        for i in range(self.board_size):
+            for j in range(self.board_size):
+                point = Point(i, j)
+                if self.snake.on_body(point):
+                    print('S', end='')
+                elif point == self.food.position:
+                    print('F', end='')
+                else:
+                    print('.', end='')
+            print()
+
+if __name__ == "__main__":
+    game = Game(10)
+    game.game_loop()
+```
+
+snake.py
+```python
+from point import Point
+
+class Snake:
+    def __init__(self, start):
+        self.body = [start]
+        self.direction = Point(0, 1)
+
+    def head(self):
+        return self.body[0]
+
+    def move(self):
+        self.body.insert(0, self.body[0] + self.direction)
+        self.body.pop()
+
+    def grow(self):
+        self.body.insert(0, self.body[0] + self.direction)
+
+    def self_collision(self):
+        return self.head() in self.body[1:]
+
+    def in_bounds(self, size):
+        return 0 <= self.head().x < size and 0 <= self.head().y < size
+
+    def on_body(self, point):
+        return point in self.body
+```
+
+food.py
+```python
+import random
+from point import Point
+
+class Food:
+    def __init__(self, board_size):
+        self.position = Point(random.randint(0, board_size - 1),
+                              random.randint(0, board_size - 1))
+```
+
+point.py
+```python
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __add__(self, other):
+        return Point(self.x + other.x, self.y + other.y)
+```
+
+Please note that this is a simple implementation of the snake game. It does not handle user input, so the snake will just move in a straight line until it hits the wall. To make the game playable, you would need to add code to handle user input and change the direction of the snake.
