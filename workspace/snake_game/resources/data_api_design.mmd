@@ -1,0 +1,25 @@
+classDiagram
+    class Game{
+        +start_game()
+        +pause_game()
+        +resume_game()
+        +end_game()
+    }
+    class Snake{
+        +__init__(self, game)
+        +move()
+        +grow()
+        +check_collision()
+    }
+    class Food{
+        +__init__(self, game)
+        +generate()
+    }
+    class ScoreBoard{
+        +__init__(self, game)
+        +update_score()
+        +display_score()
+    }
+    Game "1" -- "1" Snake: controls
+    Game "1" -- "1" Food: generates
+    Game "1" -- "1" ScoreBoard: updates
