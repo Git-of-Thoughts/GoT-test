@@ -1,0 +1,121 @@
+The core classes and functions for the snake game will be:
+
+1. `Game`: This class will represent the game itself. It will contain methods to start the game, handle user input, update the game state, and render the game on the screen.
+2. `Snake`: This class will represent the snake. It will contain methods to move the snake, grow the snake, and check if the snake has collided with itself or the edge of the screen.
+3. `Fruit`: This class will represent the fruit. It will contain a method to place the fruit at a random location on the screen.
+
+Now, let's write the code for each of these classes.
+
+snake.py
+```python
+class Snake:
+    def __init__(self):
+        self.positions = [((5, 5))]
+        self.direction = (0, -1)
+
+    def get_head_position(self):
+        return self.positions[0]
+
+    def turn(self, point):
+        if self.length() > 1 and (point[0]*-1, point[1]*-1) == self.direction:
+            return
+        else:
+            self.direction = point
+
+    def move(self):
+        cur = self.get_head_position()
+        x, y = self.direction
+        new = (((cur[0]+x)%20), (cur[1]+y)%20)
+        if len(self.positions) > 2 and new in self.positions[2:]:
+            self.reset()
+        else:
+            self.positions.insert(0, new)
+            if len(self.positions) > self.length():
+                self.positions.pop()
+
+    def reset(self):
+        self.positions = [((5, 5))]
+        self.direction = (0, -1)
+
+    def length(self):
+        return len(self.positions)
+```
+
+fruit.py
+```python
+import random
+
+class Fruit:
+    def __init__(self):
+        self.position = (0, 0)
+        self.set_position()
+
+    def set_position(self):
+        x = random.randint(0, 19)
+        y = random.randint(0, 19)
+        self.position = (x, y)
+
+    def get_position(self):
+        return self.position
+```
+
+game.py
+```python
+import curses
+from snake import Snake
+from fruit import Fruit
+
+class Game:
+    def __init__(self, screen):
+        self.screen = screen
+        self.snake = Snake()
+        self.fruit = Fruit()
+
+    def draw(self, pos, ch):
+        x, y = pos
+        self.screen.addch(int(y), int(x), ch)
+
+    def handle_keys(self):
+        key = self.screen.getch()
+        if key == curses.KEY_UP:
+            self.snake.turn((0, -1))
+        elif key == curses.KEY_DOWN:
+            self.snake.turn((0, 1))
+        elif key == curses.KEY_LEFT:
+            self.snake.turn((-1, 0))
+        elif key == curses.KEY_RIGHT:
+            self.snake.turn((1, 0))
+
+    def play(self):
+        while True:
+            self.screen.clear()
+            self.handle_keys()
+            self.snake.move()
+            if self.snake.get_head_position() == self.fruit.get_position():
+                self.fruit.set_position()
+            else:
+                self.draw(self.fruit.get_position(), '#')
+            for pos in self.snake.positions:
+                self.draw(pos, '*')
+            self.screen.refresh()
+```
+
+main.py
+```python
+import curses
+from game import Game
+
+def main(screen):
+    game = Game(screen)
+    game.play()
+
+if __name__ == "__main__":
+    curses.wrapper(main)
+```
+
+requirements.txt
+```
+curses
+```
+
+To run the game, you would need to install the dependencies listed in `requirements.txt` using pip, and then run `main.py`.
