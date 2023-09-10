@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant U as User
+    M->>G: start_game()
+    G->>M: game_board, score, level
+    M->>G: swap_pieces()
+    G->>M: check_match()
+    M->>G: update_score()
+    G->>M: score
+    M->>G: update_level()
+    G->>M: level
+    M->>U: update_high_score()
+    U->>M: high_score
+    G->>M: end_game()

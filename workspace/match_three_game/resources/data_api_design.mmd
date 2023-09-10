@@ -1,0 +1,22 @@
+classDiagram
+    class Game{
+        +list game_board
+        +int score
+        +int level
+        +start_game()
+        +end_game()
+        +swap_pieces()
+        +check_match()
+        +update_score()
+        +update_level()
+    }
+    class User{
+        +str username
+        +str password
+        +int high_score
+        +list friends
+        +add_friend()
+        +remove_friend()
+        +update_high_score()
+    }
+    Game "1" -- "1" User: has
