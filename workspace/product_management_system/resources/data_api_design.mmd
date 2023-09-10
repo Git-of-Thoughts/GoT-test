@@ -1,0 +1,30 @@
+classDiagram
+    class Product{
+        +int id
+        +str name
+        +str description
+        +bool is_efficient
+        +bool is_successful
+        +__init__(name: str, description: str, is_efficient: bool, is_successful: bool)
+    }
+    class Engineer{
+        +int id
+        +str name
+        +str role
+        +__init__(name: str, role: str)
+    }
+    class Boss{
+        +int id
+        +str name
+        +str role
+        +__init__(name: str, role: str)
+    }
+    class User{
+        +int id
+        +str name
+        +str role
+        +__init__(name: str, role: str)
+    }
+    Engineer "1" -- "*" Product: develops
+    Boss "1" -- "*" Product: requires
+    User "1" -- "*" Product: uses

@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant M as Main
+    participant E as Engineer
+    participant B as Boss
+    participant U as User
+    participant P as Product
+    M->>E: create engineer
+    E->>M: return engineer
+    M->>B: create boss
+    B->>M: return boss
+    M->>U: create user
+    U->>M: return user
+    E->>P: create product
+    P->>E: return product
+    B->>P: require product
+    P->>B: return product
+    U->>P: use product
+    P->>U: return product
+    M->>E: update product
+    E->>P: update product
+    P->>M: return updated product
+    M->>E: delete product
+    E->>P: delete product
+    P->>M: return deletion confirmation
