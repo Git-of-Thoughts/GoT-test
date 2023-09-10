@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant S as Snake
+    participant F as Food
+    participant SB as ScoreBoard
+    M->>G: start_game()
+    G->>S: move()
+    G->>F: generate_food()
+    G->>S: check_collision()
+    G->>SB: update_score()
+    G->>G: pause_game()
+    G->>G: resume_game()
+    G->>G: end_game()
+    G->>SB: reset_score()
