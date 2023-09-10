@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant M as Main
+    participant U as User
+    participant P as Product
+    M->>U: create_user(username, email, password)
+    M->>U: login_user(username, password)
+    M->>P: create_product(name, description, price)
+    U->>P: view_product(name)
+    U->>P: purchase_product(name)
+    M->>U: logout_user()
