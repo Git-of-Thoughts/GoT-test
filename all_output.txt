@@ -1,0 +1,142 @@
+The core classes, functions, and methods necessary for the snake game are:
+
+1. `Point`: A class to represent a point in the grid. It will have two attributes, `x` and `y`, to represent the coordinates of the point.
+
+2. `Snake`: A class to represent the snake. It will have the following methods:
+   - `__init__`: To initialize the snake with a given length and direction.
+   - `move`: To move the snake in the current direction.
+   - `change_direction`: To change the direction of the snake.
+   - `grow`: To increase the length of the snake.
+   - `collides_with_self`: To check if the snake has collided with itself.
+   - `collides_with_wall`: To check if the snake has collided with the wall.
+
+3. `Game`: A class to represent the game. It will have the following methods:
+   - `__init__`: To initialize the game with a given grid size and initial snake length.
+   - `play`: To start the game.
+   - `draw`: To draw the game state.
+   - `handle_input`: To handle user input.
+   - `update`: To update the game state.
+   - `check_collision`: To check if the snake has collided with the wall or itself.
+   - `spawn_apple`: To spawn an apple at a random location in the grid.
+
+4. `main`: A function to start the game.
+
+Now, let's write the code for each of these components.
+
+snake_game.py
+```python
+import random
+import curses
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+class Snake:
+    def __init__(self, length, direction):
+        self.length = length
+        self.direction = direction
+        self.body = [Point(0, i) for i in range(length)]
+
+    def move(self):
+        head = self.body[0]
+        if self.direction == 'up':
+            new_head = Point(head.x - 1, head.y)
+        elif self.direction == 'down':
+            new_head = Point(head.x + 1, head.y)
+        elif self.direction == 'left':
+            new_head = Point(head.x, head.y - 1)
+        else:  # self.direction == 'right'
+            new_head = Point(head.x, head.y + 1)
+        self.body.insert(0, new_head)
+        self.body.pop()
+
+    def change_direction(self, direction):
+        self.direction = direction
+
+    def grow(self):
+        self.length += 1
+        self.body.append(self.body[-1])
+
+    def collides_with_self(self):
+        head = self.body[0]
+        return any(point.x == head.x and point.y == head.y for point in self.body[1:])
+
+    def collides_with_wall(self, width, height):
+        head = self.body[0]
+        return head.x < 0 or head.y < 0 or head.x >= height or head.y >= width
+
+class Game:
+    def __init__(self, width, height, snake_length):
+        self.width = width
+        self.height = height
+        self.snake = Snake(snake_length, 'right')
+        self.apple = self.spawn_apple()
+        self.score = 0
+
+    def play(self):
+        curses.initscr()
+        win = curses.newwin(self.height, self.width, 0, 0)
+        win.keypad(1)
+        curses.noecho()
+        curses.curs_set(0)
+        win.border(0)
+        win.nodelay(1)
+
+        while True:
+            event = win.getch()
+            self.handle_input(event)
+            self.update()
+            if self.check_collision():
+                break
+            self.draw(win)
+
+        curses.endwin()
+
+    def draw(self, win):
+        win.clear()
+        win.border(0)
+        win.addch(self.apple.x, self.apple.y, '*')
+        for point in self.snake.body:
+            win.addch(point.x, point.y, '#')
+        win.addstr(0, 2, 'Score : ' + str(self.score) + ' ')
+        win.timeout(150 - (len(self.snake.body)//5 + len(self.snake.body)//10)%120)
+
+    def handle_input(self, event):
+        if event == ord('w'):
+            self.snake.change_direction('up')
+        elif event == ord('s'):
+            self.snake.change_direction('down')
+        elif event == ord('a'):
+            self.snake.change_direction('left')
+        elif event == ord('d'):
+            self.snake.change_direction('right')
+
+    def update(self):
+        self.snake.move()
+        head = self.snake.body[0]
+        if head.x == self.apple.x and head.y == self.apple.y:
+            self.score += 1
+            self.snake.grow()
+            self.apple = self.spawn_apple()
+
+    def check_collision(self):
+        return self.snake.collides_with_self() or self.snake.collides_with_wall(self.width, self.height)
+
+    def spawn_apple(self):
+        while True:
+            x = random.randint(1, self.height - 2)
+            y = random.randint(1, self.width - 2)
+            if not any(point.x == x and point.y == y for point in self.snake.body):
+                return Point(x, y)
+
+def main():
+    game = Game(20, 60, 5)
+    game.play()
+
+if __name__ == "__main__":
+    main()
+```
+
+This is a simple console-based snake game implemented in Python using the curses library for handling the console output. The game starts with a snake of length 5 moving to the right. The user can control the snake using the 'w', 'a', 's', 'd' keys to move up, left, down, and right respectively. An apple is spawned at a random location in the grid, and when the snake eats the apple, it grows in length and the score increases by one. The game ends when the snake collides with the wall or its own body.
