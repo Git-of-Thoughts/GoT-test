@@ -1,0 +1,15 @@
+classDiagram
+    class Sudoku{
+        -numpy.array board
+        +__init__(self, board: List[List[int]])
+        +is_valid(self, num: int, pos: Tuple[int, int]) -> bool
+        +find_empty(self) -> Union[Tuple[int, int], None]
+        +solve(self) -> bool
+    }
+    class GUI{
+        -tkinter.Tk window
+        +__init__(self)
+        +draw_grid(self)
+        +update_board(self, board: List[List[int]])
+    }
+    Sudoku -- GUI

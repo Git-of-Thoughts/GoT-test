@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant M as Main
+    participant S as Sudoku
+    participant G as GUI
+    M->>S: Initialize Sudoku(board)
+    M->>G: Initialize GUI()
+    loop until Sudoku is solved
+        M->>S: Find empty cell
+        M->>S: Check if number is valid
+        M->>S: Place number if valid
+        M->>G: Update board
+    end
+    M->>G: Display solved Sudoku
