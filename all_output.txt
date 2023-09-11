@@ -1,0 +1,135 @@
+The core classes, functions, and methods necessary for the snake game are:
+
+1. `Game` class: This class will handle the game logic, including the game loop, user input, and game over conditions.
+2. `Snake` class: This class will represent the snake, including its current position, direction, and body segments.
+3. `Apple` class: This class will represent the apple, including its current position.
+4. `draw` function: This function will draw the game state to the console.
+5. `main` function: This function will create the game objects and start the game loop.
+
+Now, let's write the code for each of these components.
+
+snake.py
+```python
+class Snake:
+    def __init__(self):
+        self.body = [(10, 10), (10, 11), (10, 12)]
+        self.direction = 'UP'
+
+    def move(self):
+        head = self.body[0]
+        if self.direction == 'UP':
+            self.body = [(head[0] - 1, head[1])] + self.body[:-1]
+        elif self.direction == 'DOWN':
+            self.body = [(head[0] + 1, head[1])] + self.body[:-1]
+        elif self.direction == 'LEFT':
+            self.body = [(head[0], head[1] - 1)] + self.body[:-1]
+        elif self.direction == 'RIGHT':
+            self.body = [(head[0], head[1] + 1)] + self.body[:-1]
+
+    def grow(self):
+        self.body.append(self.body[-1])
+
+    def change_direction(self, direction):
+        self.direction = direction
+
+    def get_head_position(self):
+        return self.body[0]
+
+    def get_body(self):
+        return self.body
+```
+
+apple.py
+```python
+import random
+
+class Apple:
+    def __init__(self):
+        self.position = (random.randint(0, 19), random.randint(0, 19))
+
+    def regenerate(self):
+        self.position = (random.randint(0, 19), random.randint(0, 19))
+
+    def get_position(self):
+        return self.position
+```
+
+game.py
+```python
+import os
+import time
+import curses
+from snake import Snake
+from apple import Apple
+
+class Game:
+    def __init__(self, window):
+        self.window = window
+        self.snake = Snake()
+        self.apple = Apple()
+
+    def draw(self):
+        self.window.clear()
+        for segment in self.snake.get_body():
+            self.window.addch(segment[0], segment[1], '#')
+        self.window.addch(self.apple.get_position()[0], self.apple.get_position()[1], '@')
+        self.window.refresh()
+
+    def game_over(self):
+        head = self.snake.get_head_position()
+        return (head in self.snake.get_body()[1:]) or (head[0] < 0 or head[0] > 19 or head[1] < 0 or head[1] > 19)
+
+    def run(self):
+        while True:
+            self.draw()
+            self.window.timeout(100)
+            event = self.window.getch()
+
+            if event == curses.KEY_UP:
+                self.snake.change_direction('UP')
+            elif event == curses.KEY_DOWN:
+                self.snake.change_direction('DOWN')
+            elif event == curses.KEY_LEFT:
+                self.snake.change_direction('LEFT')
+            elif event == curses.KEY_RIGHT:
+                self.snake.change_direction('RIGHT')
+
+            if self.snake.get_head_position() == self.apple.get_position():
+                self.snake.grow()
+                self.apple.regenerate()
+
+            self.snake.move()
+
+            if self.game_over():
+                break
+
+            time.sleep(0.1)
+
+def main():
+    curses.initscr()
+    window = curses.newwin(20, 20, 0, 0)
+    window.keypad(True)
+    game = Game(window)
+    game.run()
+    curses.endwin()
+
+if __name__ == "__main__":
+    main()
+```
+
+requirements.txt
+```
+curses
+```
+
+To run the game, you need to install the required packages using pip:
+
+```
+pip install -r requirements.txt
+```
+
+Then, you can run the game with the following command:
+
+```
+python game.py
+```
