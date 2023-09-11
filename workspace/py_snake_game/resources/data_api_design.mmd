@@ -1,0 +1,30 @@
+classDiagram
+    class Main{
+        +start_game()
+    }
+    class Game{
+        +int score
+        +bool game_over
+        +start()
+        +pause()
+        +resume()
+    }
+    class Snake{
+        +list body
+        +move()
+        +grow()
+        +check_collision()
+    }
+    class Food{
+        +tuple position
+        +generate()
+    }
+    class Scoreboard{
+        +int high_score
+        +update_score(int)
+        +display_score()
+    }
+    Main "1" -- "1" Game: starts
+    Game "1" -- "1" Snake: controls
+    Game "1" -- "1" Food: generates
+    Game "1" -- "1" Scoreboard: updates
