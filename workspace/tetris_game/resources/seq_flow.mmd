@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant B as Block
+    participant S as ScoreBoard
+    M->>G: game = Game()
+    loop Game Loop
+        G->>G: game.run()
+        G->>B: block = Block(x, y)
+        G->>B: block.move(x, y)
+        G->>B: block.rotate()
+        G->>B: block.draw(game_surface)
+        G->>S: score_board.update_score(score)
+        G->>S: score_board.draw(game_surface)
+        G->>G: game.check_game_over()
+        alt Game Over
+            G->>M: break
+        else Game Paused
+            G->>G: game.pause()
+            G->>G: game.resume()
+        end
+    end

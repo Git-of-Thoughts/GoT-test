@@ -1,0 +1,124 @@
+Assumptions:
+1. The game will be a simple version of Tetris with basic features such as moving and rotating Tetriminos, clearing lines, and scoring.
+2. The game will be developed using Python 3.8.
+3. The game will be a console-based game for simplicity.
+4. No external libraries will be used. The game will be developed using only the Python standard library.
+5. There is no specific deadline for this project.
+
+Core Classes, Functions, and Methods:
+
+1. `Game`: This class will represent the game itself. It will contain methods for starting the game, handling user input, updating the game state, and rendering the game.
+2. `Board`: This class will represent the game board. It will contain methods for adding a Tetrimino to the board, checking if a line is full, and clearing full lines.
+3. `Tetrimino`: This class will represent a Tetrimino. It will contain methods for rotating the Tetrimino and checking if a move is valid.
+4. `Point`: This class will represent a point on the game board. It will contain attributes for the x and y coordinates.
+5. `main`: This function will be the entry point of the game. It will create an instance of the `Game` class and start the game.
+
+Now, let's write the code for each file.
+
+game.py
+```python
+import random
+from board import Board
+from tetrimino import Tetrimino
+
+class Game:
+    def __init__(self):
+        self.board = Board()
+        self.current_tetrimino = self.new_tetrimino()
+        self.next_tetrimino = self.new_tetrimino()
+        self.score = 0
+
+    def new_tetrimino(self):
+        return Tetrimino(random.choice(Tetrimino.SHAPES))
+
+    def start(self):
+        while True:
+            self.board.add_tetrimino(self.current_tetrimino)
+            while not self.board.is_collision(self.current_tetrimino):
+                self.board.move_down(self.current_tetrimino)
+            self.score += self.board.clear_lines()
+            self.current_tetrimino = self.next_tetrimino
+            self.next_tetrimino = self.new_tetrimino()
+            if self.board.is_collision(self.current_tetrimino):
+                break
+        print(f"Game Over! Your score is {self.score}")
+```
+
+board.py
+```python
+from point import Point
+
+class Board:
+    WIDTH = 10
+    HEIGHT = 20
+
+    def __init__(self):
+        self.grid = [[0 for _ in range(Board.WIDTH)] for _ in range(Board.HEIGHT)]
+
+    def add_tetrimino(self, tetrimino):
+        for point in tetrimino.points:
+            self.grid[point.y][point.x] = 1
+
+    def is_collision(self, tetrimino):
+        for point in tetrimino.points:
+            if point.y < 0 or point.y >= Board.HEIGHT or point.x < 0 or point.x >= Board.WIDTH or self.grid[point.y][point.x] == 1:
+                return True
+        return False
+
+    def move_down(self, tetrimino):
+        for point in tetrimino.points:
+            point.y += 1
+
+    def clear_lines(self):
+        full_lines = [i for i, row in enumerate(self.grid) if all(cell == 1 for cell in row)]
+        for line in full_lines:
+            del self.grid[line]
+            self.grid.insert(0, [0 for _ in range(Board.WIDTH)])
+        return len(full_lines)
+```
+
+tetrimino.py
+```python
+from point import Point
+
+class Tetrimino:
+    SHAPES = [
+        [(0, 0), (1, 0), (2, 0), (3, 0)],  # I
+        [(0, 0), (1, 0), (2, 0), (1, 1)],  # T
+        [(0, 0), (1, 0), (0, 1), (1, 1)],  # O
+        [(0, 0), (1, 0), (1, 1), (2, 1)],  # Z
+        [(1, 0), (0, 1), (1, 1), (2, 0)],  # S
+        [(0, 0), (1, 0), (2, 0), (2, 1)],  # L
+        [(2, 0), (0, 1), (1, 1), (2, 1)]   # J
+    ]
+
+    def __init__(self, shape):
+        self.points = [Point(x, y) for x, y in shape]
+```
+
+point.py
+```python
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+```
+
+main.py
+```python
+from game import Game
+
+def main():
+    game = Game()
+    game.start()
+
+if __name__ == "__main__":
+    main()
+```
+
+requirements.txt
+```txt
+python==3.8
+```
+
+Please note that this is a very basic version of Tetris and does not include features such as rotating Tetriminos, displaying the next Tetrimino, or handling user input. These features could be added with additional code.
