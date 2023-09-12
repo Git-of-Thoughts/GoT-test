@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant U as User
+    participant I as Image
+    participant C as Comment
+    participant L as Like
+    U->>I: save_image(image)
+    U->>I: upload_image(image)
+    U->>C: comment_on_image(image, comment)
+    U->>L: like_image(image)
+    I->>C: add_comment(comment)
+    I->>L: add_like(like)
