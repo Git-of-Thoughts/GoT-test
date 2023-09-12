@@ -1,0 +1,42 @@
+classDiagram
+    class User{
+        +str username
+        +str password
+        +str email
+        +list[Image] saved_images
+        +list[Image] uploaded_images
+        +list[Comment] comments
+        +list[Like] likes
+        +__init__(username: str, password: str, email: str)
+        +save_image(image: Image)
+        +upload_image(image: Image)
+        +comment_on_image(image: Image, comment: str)
+        +like_image(image: Image)
+    }
+    class Image{
+        +str url
+        +str title
+        +str description
+        +User uploader
+        +list[Comment] comments
+        +list[Like] likes
+        +__init__(url: str, title: str, description: str, uploader: User)
+        +add_comment(comment: Comment)
+        +add_like(like: Like)
+    }
+    class Comment{
+        +User author
+        +str text
+        +Image image
+        +__init__(author: User, text: str, image: Image)
+    }
+    class Like{
+        +User user
+        +Image image
+        +__init__(user: User, image: Image)
+    }
+    User "1" -- "*" Image: saves, uploads
+    User "1" -- "*" Comment: writes
+    User "1" -- "*" Like: makes
+    Image "1" -- "*" Comment: has
+    Image "1" -- "*" Like: has
